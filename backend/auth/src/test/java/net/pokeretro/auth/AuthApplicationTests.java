@@ -2,7 +2,6 @@ package net.pokeretro.auth;
 
 import net.pokeretro.auth.security.TokenManager;
 import net.pokeretro.auth.user.User;
-import net.pokeretro.auth.user.UserRepository;
 import net.pokeretro.auth.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
