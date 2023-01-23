@@ -28,7 +28,6 @@ public class TokenManager {
         this.expirationDelay = expirationDelay;
         this.expirationUnit = expirationUnit;
         key = Keys.hmacShaKeyFor(secret.getBytes());
-        //key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 
     public static TokenManager getInstance(long expirationDelay, TemporalUnit expirationUnit) {
@@ -42,7 +41,7 @@ public class TokenManager {
         return getInstance(1L, ChronoUnit.HOURS);
     }
 
-    public String createToken(String username, String password) {
+    public String createToken(String username) {
         return Jwts.builder()
                 .setIssuer(issuer)
                 .setSubject(username)
