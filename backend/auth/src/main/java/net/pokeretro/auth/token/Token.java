@@ -1,10 +1,9 @@
 package net.pokeretro.auth.token;
 
-import jakarta.persistence.*;
-import net.pokeretro.auth.security.TokenManager;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Date;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "token_blacklist")

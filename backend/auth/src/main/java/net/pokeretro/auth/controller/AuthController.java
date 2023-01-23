@@ -1,7 +1,5 @@
 package net.pokeretro.auth.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import net.pokeretro.auth.exception.InvalidPasswordException;
 import net.pokeretro.auth.exception.InvalidTokenException;
 import net.pokeretro.auth.security.PasswordHash;
