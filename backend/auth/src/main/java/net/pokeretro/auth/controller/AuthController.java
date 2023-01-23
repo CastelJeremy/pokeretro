@@ -3,6 +3,7 @@ package net.pokeretro.auth.controller;
 import net.pokeretro.auth.exception.InvalidPasswordException;
 import net.pokeretro.auth.exception.InvalidTokenException;
 import net.pokeretro.auth.security.PasswordHash;
+import net.pokeretro.auth.token.Token;
 import net.pokeretro.auth.token.TokenService;
 import net.pokeretro.auth.user.User;
 import net.pokeretro.auth.user.UserRepository;
@@ -54,36 +55,34 @@ public class AuthController {
     }
 
     @RequestMapping(value="/register", method = RequestMethod.POST)
-    public String register(@RequestParam(value="username") String username,
-                           @RequestParam(value="password") String password) throws NoSuchAlgorithmException {
-        service.saveUser(new User(username, PasswordHash.hash(password)));
-        return tokenService.toJSON(tokenService.createToken(username)).toString();
+    public String register(@RequestBody User user) throws NoSuchAlgorithmException {
+        service.saveUser(new User(user.getUsername(), PasswordHash.hash(user.getPassword())));
+        return tokenService.toJSON(tokenService.createToken(user.getUsername())).toString();
     }
 
     @RequestMapping(value="/login", method = RequestMethod.POST)
-    public String login(@RequestParam(value="username") String username,
-                           @RequestParam(value="password") String password) throws NoSuchAlgorithmException, InvalidPasswordException {
-        Collection<User> users = getUser(null, username);
+    public String login(@RequestBody User user) throws NoSuchAlgorithmException, InvalidPasswordException {
+        Collection<User> users = getUser(null, user.getUsername());
         if(users.size() > 0) {
-            for (User user : users) {
-                if(user.getPassword().equals(PasswordHash.hash(password))) {
-                    return tokenService.toJSON(tokenService.createToken(username)).toString();
+            for (User u : users) {
+                if(u.getPassword().equals(PasswordHash.hash(user.getPassword()))) {
+                    return tokenService.toJSON(tokenService.createToken(u.getUsername())).toString();
                 }
             }
             throw new InvalidPasswordException();
         } else {
-            throw new RuntimeException("The user " + username + " does not exists !");
+            throw new RuntimeException("The user " + user.getUsername() + " does not exists !");
         }
     }
 
     @RequestMapping(value="/logout", method = RequestMethod.POST)
-    public void logout(@RequestParam(value="token") String token) {
-        tokenService.addTokenToBlacklist(token);
+    public void logout(@RequestBody Token token) {
+        tokenService.addTokenToBlacklist(token.getToken());
     }
 
     @RequestMapping(value="validate", method = RequestMethod.POST)
-    public void validateToken(@RequestParam(value="token") String token) throws InvalidTokenException {
-        int response = tokenService.isTokenValid(token);
+    public void validateToken(@RequestBody Token token) throws InvalidTokenException {
+        int response = tokenService.isTokenValid(token.getToken());
 
         if(response != 0) {
             throw new InvalidTokenException(response);
@@ -91,7 +90,9 @@ public class AuthController {
     }
 
     @RequestMapping(value="/refresh", method = RequestMethod.POST)
-    public String refresh(@RequestParam(value="token") String token) throws InvalidTokenException {
-        return tokenService.toJSON(tokenService.refreshToken(token)).toString();
+    public String refresh(@RequestBody Token token) throws InvalidTokenException {
+        String newToken = tokenService.toJSON(tokenService.refreshToken(token.getToken())).toString();
+        tokenService.addTokenToBlacklist(token.getToken());
+        return newToken;
     }
 }
