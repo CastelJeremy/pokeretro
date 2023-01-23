@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,9 +33,9 @@ public class AuthController {
     }
 
     @RequestMapping(value="/users", method = RequestMethod.GET)
-    public Collection<User> getUser(@RequestParam(value="id", required = false, defaultValue = "-1") long id,
+    public Collection<User> getUser(@RequestParam(value="id", required = false) UUID id,
                         @RequestParam(value="username", required = false, defaultValue = "-1") String username) {
-        if(id >= 0) {
+        if(id != null) {
             //Si ID est défini : alors on renvoie le joueur ayant l'ID correspondant
             return service.getUsers()
                     .stream()
@@ -62,7 +63,7 @@ public class AuthController {
     @RequestMapping(value="/login", method = RequestMethod.POST)
     public String login(@RequestParam(value="username") String username,
                            @RequestParam(value="password") String password) throws NoSuchAlgorithmException, InvalidPasswordException {
-        Collection<User> users = getUser(-1, username);
+        Collection<User> users = getUser(null, username);
         if(users.size() > 0) {
             for (User user : users) {
                 if(user.getPassword().equals(PasswordHash.hash(password))) {

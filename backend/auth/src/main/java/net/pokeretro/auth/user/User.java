@@ -2,14 +2,16 @@ package net.pokeretro.auth.user;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false, length = 64, unique = true)
     private String username;
@@ -24,7 +26,7 @@ public class User {
         this.password = password;
     }
 
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
