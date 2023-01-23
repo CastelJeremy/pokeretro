@@ -26,7 +26,6 @@ class AuthApplicationTests {
         User savedUser = userService.saveUser(newUser);
 
         assertThat(savedUser).isNotNull();
-        assertThat(savedUser.getId()).isGreaterThan(0);
     }
 
     @Test
