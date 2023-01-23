@@ -1,5 +1,6 @@
 package net.pokeretro.auth.token;
 
+import com.google.gson.JsonObject;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -110,6 +111,12 @@ public class TokenService {
 
     public Date getTokenExpiration(final Token token) {
         return parseToken(token.toString()).getBody().getExpiration();
+    }
+
+    public JsonObject toJSON(String token) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("token", token);
+        return jsonObject;
     }
 
 }

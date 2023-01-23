@@ -58,7 +58,7 @@ public class AuthController {
     public String register(@RequestParam(value="username") String username,
                            @RequestParam(value="password") String password) throws NoSuchAlgorithmException {
         service.saveUser(new User(username, PasswordHash.hash(password)));
-        return tokenService.createToken(username);
+        return tokenService.toJSON(tokenService.createToken(username)).toString();
     }
 
     @RequestMapping(value="/login", method = RequestMethod.POST)
@@ -68,9 +68,7 @@ public class AuthController {
         if(users.size() > 0) {
             for (User user : users) {
                 if(user.getPassword().equals(PasswordHash.hash(password))) {
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("token", tokenService.createToken(username));
-                    return jsonObject.toString();
+                    return tokenService.toJSON(tokenService.createToken(username)).toString();
                 }
             }
             throw new InvalidPasswordException();
