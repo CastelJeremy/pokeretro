@@ -88,4 +88,9 @@ public class AuthController {
             throw new InvalidTokenException(response);
         }
     }
+
+    @RequestMapping(value="/refresh", method = RequestMethod.POST)
+    public String refresh(@RequestParam(value="token") String token) throws InvalidTokenException {
+        return tokenService.toJSON(tokenService.refreshToken(token)).toString();
+    }
 }

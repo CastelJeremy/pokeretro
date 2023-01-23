@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import net.pokeretro.auth.exception.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,8 +90,14 @@ public class TokenService {
         }
     }
 
-    public void refreshToken() {
-
+    public String refreshToken(String token) throws InvalidTokenException {
+        int tokenValidity = isTokenValid(token);
+        if(tokenValidity == 0) {
+            String username = parseToken(token).getBody().getSubject();
+            return createToken(username);
+        } else {
+            throw new InvalidTokenException(tokenValidity);
+        }
     }
 
     public void addTokenToBlacklist(final String token) {
@@ -109,8 +116,12 @@ public class TokenService {
         return tokenBlacklist.findById(token).isPresent();
     }
 
-    public Date getTokenExpiration(final Token token) {
-        return parseToken(token.toString()).getBody().getExpiration();
+    public Date getTokenExpiration(final Token token){
+        try {
+            return parseToken(token.toString()).getBody().getExpiration();
+        } catch (ExpiredJwtException e) {
+            return Date.from(Instant.now().minus(1L, ChronoUnit.DAYS));
+        }
     }
 
     public JsonObject toJSON(String token) {
