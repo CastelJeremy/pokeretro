@@ -1,5 +1,6 @@
 package net.pokeretro.auth.controller;
 
+import net.pokeretro.auth.exception.InvalidTokenException;
 import net.pokeretro.auth.security.TokenManager;
 import net.pokeretro.auth.user.User;
 import net.pokeretro.auth.user.UserRepository;
@@ -24,11 +25,6 @@ public class AuthController {
         return true;
     }
 
-    /*@GetMapping("/users")
-    public Collection<User> getAllUsers() {
-        return service.getUsers();
-    }*/
-
     @RequestMapping(value="/users", method = RequestMethod.GET)
     public Collection<User> getUser(@RequestParam(value="id", required = false, defaultValue = "-1") long id,
                         @RequestParam(value="username", required = false, defaultValue = "-1") String username) {
@@ -50,14 +46,14 @@ public class AuthController {
         }
     }
 
-    @RequestMapping(value="/new-account", method = RequestMethod.POST)
+    @RequestMapping(value="/register", method = RequestMethod.POST)
     public String createAccount(@RequestParam(value="username") String username,
                            @RequestParam(value="password") String password) {
         service.saveUser(new User(username, password));
         return TokenManager.getInstance().createToken(username, password);
     }
 
-    @RequestMapping(value="/connect", method = RequestMethod.POST)
+    @RequestMapping(value="/login", method = RequestMethod.POST)
     public String connect(@RequestParam(value="username") String username,
                            @RequestParam(value="password") String password) {
         Collection<User> users = getUser(-1, username);
@@ -74,7 +70,7 @@ public class AuthController {
         }
     }
 
-    @RequestMapping(value="/disconnect", method = RequestMethod.POST)
+    @RequestMapping(value="/logout", method = RequestMethod.POST)
     public Integer disconnect(@RequestParam(value="username") String username) {
         Collection<User> users = getUser(-1, username);
         if(users.size() > 0) {
@@ -82,6 +78,15 @@ public class AuthController {
             throw new RuntimeException("Not yet implemented !");
         } else {
             throw new RuntimeException("The user " + username + " does not exists !");
+        }
+    }
+
+    @RequestMapping(value="validate", method = RequestMethod.POST)
+    public void validateToken(@RequestParam(value="token") String token) throws InvalidTokenException {
+        int response = TokenManager.getInstance().isTokenValid(token);
+
+        if(response != 0) {
+            throw new InvalidTokenException(response);
         }
     }
 }
