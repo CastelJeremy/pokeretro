@@ -1,7 +1,7 @@
 package net.pokeretro.auth;
 
 import net.pokeretro.auth.security.PasswordHash;
-import net.pokeretro.auth.security.TokenManager;
+import net.pokeretro.auth.token.TokenService;
 import net.pokeretro.auth.user.User;
 import net.pokeretro.auth.user.UserService;
 import org.junit.jupiter.api.Test;
@@ -10,19 +10,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.security.NoSuchAlgorithmException;
 
-import static net.pokeretro.auth.security.PasswordHash.hash;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class AuthApplicationTests {
 
     @Autowired
-    private UserService service;
+    private UserService userService;
+    @Autowired
+    private TokenService tokenService;
 
     @Test
     void createUser() {
         User newUser = new User("test4", "password");
-        User savedUser = service.saveUser(newUser);
+        User savedUser = userService.saveUser(newUser);
 
         assertThat(savedUser).isNotNull();
         assertThat(savedUser.getId()).isGreaterThan(0);
@@ -30,16 +31,24 @@ class AuthApplicationTests {
 
     @Test
     void createToken() {
-        TokenManager tokenManager = TokenManager.getInstance();
-        String token = tokenManager.createToken("test");
+        String token = tokenService.createToken("test");
         System.out.println(token);
-        System.out.println(tokenManager.parseToken(token));
-        assertThat(tokenManager.isTokenValid(token)).isEqualTo(0);
+        System.out.println(tokenService.parseToken(token));
+        assertThat(tokenService.isTokenValid(token)).isEqualTo(0);
+    }
+
+    @Test
+    void destroyToken() {
+        String token = tokenService.createToken("test");
+
+        tokenService.addTokenToBlacklist(token);
+
+        assertThat(tokenService.isTokenValid(token)).isEqualTo(1);
     }
 
     @Test
     void hashPassword() {
-        String encodedPassword = null;
+        String encodedPassword;
         try {
             encodedPassword = PasswordHash.hash("JeSuisUnMotDePasse");
         } catch (NoSuchAlgorithmException e) {

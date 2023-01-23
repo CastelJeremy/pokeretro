@@ -1,18 +1,18 @@
 package net.pokeretro.auth.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import net.pokeretro.auth.exception.InvalidPasswordException;
 import net.pokeretro.auth.exception.InvalidTokenException;
 import net.pokeretro.auth.security.PasswordHash;
-import net.pokeretro.auth.security.TokenManager;
+import net.pokeretro.auth.token.TokenService;
 import net.pokeretro.auth.user.User;
 import net.pokeretro.auth.user.UserRepository;
 import net.pokeretro.auth.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -23,6 +23,9 @@ public class AuthController {
     private UserService service;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenService tokenService;
 
     @CrossOrigin()
     @GetMapping("/test")
@@ -55,40 +58,35 @@ public class AuthController {
     public String register(@RequestParam(value="username") String username,
                            @RequestParam(value="password") String password) throws NoSuchAlgorithmException {
         service.saveUser(new User(username, PasswordHash.hash(password)));
-        return TokenManager.getInstance().createToken(username);
+        return tokenService.createToken(username);
     }
 
     @RequestMapping(value="/login", method = RequestMethod.POST)
     public String login(@RequestParam(value="username") String username,
-                           @RequestParam(value="password") String password) {
+                           @RequestParam(value="password") String password) throws NoSuchAlgorithmException, InvalidPasswordException {
         Collection<User> users = getUser(-1, username);
         if(users.size() > 0) {
             for (User user : users) {
-                //TODO chercher si le mot de passe est correct.
-                if(true) {
-                    return TokenManager.getInstance().createToken(username);
+                if(user.getPassword().equals(PasswordHash.hash(password))) {
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("token", tokenService.createToken(username));
+                    return jsonObject.toString();
                 }
             }
-            throw new RuntimeException("Wrong password !");
+            throw new InvalidPasswordException();
         } else {
             throw new RuntimeException("The user " + username + " does not exists !");
         }
     }
 
     @RequestMapping(value="/logout", method = RequestMethod.POST)
-    public Integer logout(@RequestParam(value="username") String username) {
-        Collection<User> users = getUser(-1, username);
-        if(users.size() > 0) {
-            //TODO chercher le JWT de l'utilisateur et le rendre "EXPIRÉ"
-            throw new RuntimeException("Not yet implemented !");
-        } else {
-            throw new RuntimeException("The user " + username + " does not exists !");
-        }
+    public void logout(@RequestParam(value="token") String token) {
+        tokenService.addTokenToBlacklist(token);
     }
 
     @RequestMapping(value="validate", method = RequestMethod.POST)
     public void validateToken(@RequestParam(value="token") String token) throws InvalidTokenException {
-        int response = TokenManager.getInstance().isTokenValid(token);
+        int response = tokenService.isTokenValid(token);
 
         if(response != 0) {
             throw new InvalidTokenException(response);

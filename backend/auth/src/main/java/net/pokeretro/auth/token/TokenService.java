@@ -1,10 +1,8 @@
-package net.pokeretro.auth.security;
+package net.pokeretro.auth.token;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import net.pokeretro.auth.token.TokenBlacklist;
-import net.pokeretro.auth.token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,42 +11,23 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.Date;
+import java.util.stream.Collectors;
 
-public class TokenManager {
-
-    @Autowired
-    private TokenService tokenService;
-
+@Service
+public class TokenService {
     @Autowired
     private TokenBlacklist tokenBlacklist;
 
-    private static TokenManager tokenManager;
-
-    //@Value("${app.jwt.secret}")
     private final String secret = "WowThatAVerySecretPasscodeThatYouWillNeverBeAbleToKnowEheh";
-    //@Value("${app.jwt.issuer}")
     private final String issuer = "auth_service";
 
-    private final long expirationDelay;
-    private final TemporalUnit expirationUnit;
+    private final long expirationDelay = 1L;
+    private final TemporalUnit expirationUnit = ChronoUnit.HOURS;
 
     private final Key key;
 
-    private TokenManager(long expirationDelay, TemporalUnit expirationUnit) {
-        this.expirationDelay = expirationDelay;
-        this.expirationUnit = expirationUnit;
+    public TokenService() {
         key = Keys.hmacShaKeyFor(secret.getBytes());
-    }
-
-    public static TokenManager getInstance(long expirationDelay, TemporalUnit expirationUnit) {
-        return tokenManager == null ? new TokenManager(expirationDelay, expirationUnit) : tokenManager;
-    }
-
-    /**
-     * Par défaut, le temps d'expiration du token est 1 heure.
-     */
-    public static TokenManager getInstance() {
-        return getInstance(1L, ChronoUnit.HOURS);
     }
 
     public String createToken(String username) {
@@ -66,7 +45,7 @@ public class TokenManager {
 
     public Jws<Claims> parseToken(String token)
             throws ExpiredJwtException,
-            SignatureException,
+            io.jsonwebtoken.security.SignatureException,
             UnsupportedJwtException,
             MalformedJwtException,
             IllegalArgumentException {
@@ -85,7 +64,7 @@ public class TokenManager {
     public int isTokenValid(String token) {
         try {
             Jws<Claims> jwt = parseToken(token);
-            if (tokenService.isTokenExpired(token))
+            if (isTokenExpired(token))
                 throw new ExpiredJwtException(jwt.getHeader(), jwt.getBody(), "Expired");
             return 0;
         } catch (ExpiredJwtException e) {
@@ -113,7 +92,24 @@ public class TokenManager {
 
     }
 
-    public void destroyToken(String token) {
-        tokenService.addTokenToBlacklist(token);
+    public void addTokenToBlacklist(final String token) {
+        clean();
+        tokenBlacklist.save(new Token(token));
     }
+
+    private void clean() {
+        tokenBlacklist.deleteAll(tokenBlacklist.findAll()
+                .stream()
+                .filter(token -> getTokenExpiration(token).before(Date.from(Instant.now())))
+                .collect(Collectors.toList()));
+    }
+
+    public boolean isTokenExpired(final String token) {
+        return tokenBlacklist.findById(token).isPresent();
+    }
+
+    public Date getTokenExpiration(final Token token) {
+        return parseToken(token.toString()).getBody().getExpiration();
+    }
+
 }
