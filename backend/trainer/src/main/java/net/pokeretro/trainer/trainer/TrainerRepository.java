@@ -16,5 +16,6 @@ public interface TrainerRepository extends JpaRepository<Trainer, UUID> {
 
     @Query("SELECT t.id, t.username, t.gender, t.starter FROM Trainer t")
     Collection<Trainer> getUsers();
+
 }
 
