@@ -33,7 +33,7 @@ public class PokemonController {
 
     @CrossOrigin
     @GetMapping("/pokemons/{id}")
-    public ResponseEntity<Pokemon> getPokemon(@PathVariable("id") Long id) {
+    public ResponseEntity<Pokemon> getPokemon(@PathVariable Long id) {
         Optional<Pokemon> pokemon = pokemonRepository.findById(id);
 
         if (pokemon.isPresent())
@@ -44,7 +44,7 @@ public class PokemonController {
 
     @CrossOrigin
     @PostMapping("/pokemons/{id}/generate")
-    public ResponseEntity<Pokemon> postPokemon(@PathVariable("id") Long id) {
+    public ResponseEntity<Pokemon> postPokemon(@PathVariable Long id) {
         Optional<Pokemon> pokemon = pokemonRepository.findById(id);
 
         if (pokemon.isPresent()) {

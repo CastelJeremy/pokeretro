@@ -8,7 +8,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "capacity")
+@Table(name = "capacities")
 public class Capacity {
     @Id
     private Long id;
@@ -28,7 +28,7 @@ public class Capacity {
     @Column(nullable = false)
     private Long pp;
 
-    @OneToOne(targetEntity = Type.class)
+    @OneToOne
     @JoinColumn(name = "id_type", referencedColumnName = "id")
     private Type type;
 

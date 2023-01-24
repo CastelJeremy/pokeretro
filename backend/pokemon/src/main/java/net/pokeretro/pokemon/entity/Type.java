@@ -3,8 +3,10 @@ package net.pokeretro.pokemon.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "types")
 public class Type {
     @Id
     private Long id;

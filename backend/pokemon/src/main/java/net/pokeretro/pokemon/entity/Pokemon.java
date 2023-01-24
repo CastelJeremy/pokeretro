@@ -8,10 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "pokemon")
+@Table(name = "pokemons")
 public class Pokemon {
     @Id
     private Long id;
@@ -20,30 +22,35 @@ public class Pokemon {
     private String name;
 
     @Column(nullable = false)
-    private Long hp;
+    private Integer hp;
 
     @Column(nullable = false)
-    private Long attack;
+    private Integer attack;
 
     @Column(nullable = false)
-    private Long defense;
+    private Integer defense;
 
     @Column(nullable = false)
-    private Long specialAttack;
+    private Integer specialAttack;
 
     @Column(nullable = false)
-    private Long specialDefense;
+    private Integer specialDefense;
 
     @Column(nullable = false)
-    private Long speed;
+    private Integer speed;
 
-    @ManyToMany(targetEntity = Type.class)
+    @ManyToMany
     @JoinTable(name = "pokemon_type", joinColumns = @JoinColumn(name = "id_pokemon"), inverseJoinColumns = @JoinColumn(name = "id_type"))
     private List<Type> types;
 
-    @ManyToMany(targetEntity = Capacity.class)
-    @JoinTable(name = "pokemon_capacity", joinColumns = @JoinColumn(name = "id_pokemon"), inverseJoinColumns = @JoinColumn(name = "id_capacity"))
-    private List<Capacity> capacities;
+    @OneToMany(mappedBy = "pokemon")
+    private List<PokemonCapacity> capacities;
+
+    private Integer evolutionLevel;
+
+    @ManyToOne
+    @JoinColumn(name = "id_evolution")
+    private Pokemon evolution;
 
     public Long getId() {
         return this.id;
@@ -57,31 +64,39 @@ public class Pokemon {
         return this.types;
     }
 
-    public List<Capacity> getCapacities() {
+    public List<PokemonCapacity> getCapacities() {
         return this.capacities;
     }
 
-   public Long getHp() {
+    public Integer getHp() {
         return this.hp;
     }
 
-    public Long getAttack() {
+    public Integer getAttack() {
         return this.attack;
     }
 
-    public Long getDefense() {
+    public Integer getDefense() {
         return this.defense;
     }
 
-    public Long getSpecialAttack() {
+    public Integer getSpecialAttack() {
         return this.specialAttack;
     }
 
-    public Long getSpecialDefense() {
+    public Integer getSpecialDefense() {
         return this.specialDefense;
     }
 
-    public Long getSpeed() {
+    public Integer getSpeed() {
         return this.speed;
+    }
+
+    public Integer getEvolutionLevel() {
+        return this.evolutionLevel;
+    }
+
+    public Pokemon getEvolution() {
+        return this.evolution;
     }
 }
