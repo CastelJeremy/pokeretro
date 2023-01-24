@@ -18,4 +18,16 @@ public class Trainer {
 
     @Column(name = "gender", nullable = false)
     private String gender;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getGender() {
+        return gender;
+    }
 }
