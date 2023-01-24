@@ -19,16 +19,14 @@ public class TrainerController {
     @Autowired
     private TrainerService service;
     @RequestMapping(value="/create", method = RequestMethod.POST)
-    public ResponseEntity<Trainer> create (@RequestParam(value = "username", required = false, defaultValue = "-1") String username,
-                                                    @RequestParam(value = "gender", required = false, defaultValue = "-1") String gender,
-                                                    @RequestParam(value = "starter", required = false, defaultValue = "-1") int starter)
+    public ResponseEntity<Trainer> create (@RequestBody Trainer trainer)
     {
-        if (!Objects.equals(gender, "boy") && !Objects.equals(gender, "girl"))
+        if (!Objects.equals(trainer.getGender(), "boy") && !Objects.equals(trainer.getGender(), "girl"))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        else if (!Objects.equals(starter, 1) && !Objects.equals(starter, 4) && !Objects.equals(starter, 7))
+        else if (!Objects.equals(trainer.getStarter(), 1) && !Objects.equals(trainer.getStarter(), 4) && !Objects.equals(trainer.getStarter(), 7))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         else {
-            Trainer newTrainer = new Trainer(username, gender, starter);
+            Trainer newTrainer = new Trainer(trainer.getUsername(), trainer.getGender(), trainer.getStarter());
             service.saveTrainer(newTrainer);
             if (service.getTrainer(newTrainer.getId()).isPresent())
                 return ResponseEntity.ok(service.getTrainer(newTrainer.getId()).get());

@@ -14,7 +14,9 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping />
+        <datasource-mapping>
+          <factory-entry name="trainer" value="01fe64c7-ea77-41c2-8afc-fc3372aed7d5" />
+        </datasource-mapping>
         <naming-strategy-map />
       </configuration>
     </facet>
