@@ -8,8 +8,8 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class PokemonCapacityId implements Serializable {
     @Column(name = "id_pokemon")
-    private Long pokemonId;
+    private Integer pokemonId;
 
     @Column(name = "id_capacity")
-    private Long capacityId;
+    private Integer capacityId;
 }

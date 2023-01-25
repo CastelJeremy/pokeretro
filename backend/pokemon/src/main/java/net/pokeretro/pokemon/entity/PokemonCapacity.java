@@ -27,6 +27,14 @@ public class PokemonCapacity {
     @Column(nullable = false)
     private Integer level;
 
+    public PokemonCapacityId getPokemonCapacityId() {
+        return pokemonCapacityId;
+    }
+
+    public Pokemon getPokemon() {
+        return pokemon;
+    }
+
     public Capacity getCapacity() {
         return capacity;
     }

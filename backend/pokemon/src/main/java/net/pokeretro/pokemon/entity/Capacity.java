@@ -6,12 +6,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import net.pokeretro.pokemon.dto.CapacityDTO;
 
 @Entity
 @Table(name = "capacities")
 public class Capacity {
     @Id
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, length = 32)
     private String name;
@@ -20,17 +21,21 @@ public class Capacity {
     private String category;
 
     @Column(nullable = false)
-    private Long power;
+    private Integer power;
 
     @Column(nullable = false)
-    private Long accuracy;
+    private Integer accuracy;
 
     @Column(nullable = false)
-    private Long pp;
+    private Integer pp;
 
     @OneToOne
     @JoinColumn(name = "id_type", referencedColumnName = "id")
     private Type type;
+
+    public Integer getId() {
+        return id;
+    }
 
     public String getName() {
         return this.name;
@@ -40,19 +45,23 @@ public class Capacity {
         return this.category;
     }
 
-    public Long getPower() {
+    public Integer getPower() {
         return this.power;
     }
 
-    public Long getAccuracy() {
+    public Integer getAccuracy() {
         return this.accuracy;
     }
 
-    public Long getPp() {
+    public Integer getPp() {
         return this.pp;
     }
 
     public Type getType() {
         return this.type;
+    }
+
+    public CapacityDTO toDto() {
+        return new CapacityDTO(this.name, this.category, this.power, this.accuracy, this.pp, this.type.getName());
     }
 }

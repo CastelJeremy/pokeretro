@@ -9,12 +9,12 @@ import jakarta.persistence.Table;
 @Table(name = "types")
 public class Type {
     @Id
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, length = 32)
     private String name;
 
-    public Long getId() {
+    public Integer getId() {
         return this.id;
     }
 

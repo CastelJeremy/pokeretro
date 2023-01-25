@@ -10,34 +10,21 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import net.pokeretro.pokemon.dto.CapacityDTO;
+import net.pokeretro.pokemon.dto.PokemonDTO;
+import net.pokeretro.pokemon.dto.StatDTO;
 
 @Entity
 @Table(name = "pokemons")
 public class Pokemon {
     @Id
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, length = 64)
     private String name;
-
-    @Column(nullable = false)
-    private Integer hp;
-
-    @Column(nullable = false)
-    private Integer attack;
-
-    @Column(nullable = false)
-    private Integer defense;
-
-    @Column(nullable = false)
-    private Integer specialAttack;
-
-    @Column(nullable = false)
-    private Integer specialDefense;
-
-    @Column(nullable = false)
-    private Integer speed;
 
     @ManyToMany
     @JoinTable(name = "pokemon_type", joinColumns = @JoinColumn(name = "id_pokemon"), inverseJoinColumns = @JoinColumn(name = "id_type"))
@@ -46,13 +33,20 @@ public class Pokemon {
     @OneToMany(mappedBy = "pokemon")
     private List<PokemonCapacity> capacities;
 
+    @OneToOne
+    @JoinColumn(name = "id_stat")
+    private Stat baseStat;
+
+    @Transient
+    private Stat individualStat;
+
     private Integer evolutionLevel;
 
     @ManyToOne
     @JoinColumn(name = "id_evolution")
     private Pokemon evolution;
 
-    public Long getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -68,28 +62,16 @@ public class Pokemon {
         return this.capacities;
     }
 
-    public Integer getHp() {
-        return this.hp;
+    public Stat getBaseStat() {
+        return baseStat;
     }
 
-    public Integer getAttack() {
-        return this.attack;
+    public Stat getIndividualStat() {
+        return individualStat;
     }
 
-    public Integer getDefense() {
-        return this.defense;
-    }
-
-    public Integer getSpecialAttack() {
-        return this.specialAttack;
-    }
-
-    public Integer getSpecialDefense() {
-        return this.specialDefense;
-    }
-
-    public Integer getSpeed() {
-        return this.speed;
+    public void setIndividualStat(Stat individualStat) {
+        this.individualStat = individualStat;
     }
 
     public Integer getEvolutionLevel() {
@@ -98,5 +80,14 @@ public class Pokemon {
 
     public Pokemon getEvolution() {
         return this.evolution;
+    }
+
+    public PokemonDTO toDto() {
+        List<CapacityDTO> capacities = this.capacities.stream().map(capacity -> capacity.getCapacity().toDto()).toList();
+        List<String> types = this.types.stream().map(type -> type.getName()).toList();
+        Integer evolutionId = this.evolution != null ? this.evolution.getId() : null;
+        StatDTO individualStat = this.individualStat != null ? this.individualStat.toDto() : null;
+
+        return new PokemonDTO(this.id, this.name, types, capacities, this.baseStat.toDto(), individualStat, this.evolutionLevel, evolutionId);
     }
 }

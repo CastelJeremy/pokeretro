@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import net.pokeretro.pokemon.dto.PokemonDTO;
 import net.pokeretro.pokemon.entity.Pokemon;
 import net.pokeretro.pokemon.repository.PokemonRepository;
 import net.pokeretro.pokemon.service.PokemonService;
@@ -27,28 +28,31 @@ public class PokemonController {
 
     @CrossOrigin
     @GetMapping("/pokemons")
-    public ResponseEntity<List<Pokemon>> getPokemons() {
-        return ResponseEntity.ok(pokemonRepository.findAll());
+    public ResponseEntity<List<PokemonDTO>> getPokemons() {
+        List<Pokemon> pokemons = pokemonRepository.findAll();
+        List<PokemonDTO> pokemonDTOs = pokemons.stream().map(pokemon -> pokemon.toDto()).toList();
+
+        return ResponseEntity.ok(pokemonDTOs);
     }
 
     @CrossOrigin
     @GetMapping("/pokemons/{id}")
-    public ResponseEntity<Pokemon> getPokemon(@PathVariable Long id) {
+    public ResponseEntity<PokemonDTO> getPokemon(@PathVariable Integer id) {
         Optional<Pokemon> pokemon = pokemonRepository.findById(id);
 
         if (pokemon.isPresent())
-            return ResponseEntity.ok(pokemon.get());
+            return ResponseEntity.ok(pokemon.get().toDto());
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @CrossOrigin
     @PostMapping("/pokemons/{id}/generate")
-    public ResponseEntity<Pokemon> postPokemon(@PathVariable Long id) {
+    public ResponseEntity<PokemonDTO> postPokemon(@PathVariable Integer id) {
         Optional<Pokemon> pokemon = pokemonRepository.findById(id);
 
         if (pokemon.isPresent()) {
-            return ResponseEntity.ok(pokemonService.generate(pokemon.get()));
+            return ResponseEntity.ok(pokemonService.generate(pokemon.get()).toDto());
         }
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
