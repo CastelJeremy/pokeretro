@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import net.pokeretro.team.dto.PokemonDTO;
+import net.pokeretro.team.entity.Capacity;
 import net.pokeretro.team.entity.Pokemon;
 import net.pokeretro.team.entity.Stat;
 import net.pokeretro.team.entity.Teammate;
@@ -35,6 +36,7 @@ public class TeammateService {
         Stat individualStat = Stat.fromDto(pokemonDto.getIndividualStat());
         Stat effortStat = new Stat(0, 0, 0, 0, 0);
         Stat stat = statService.processStat(1, baseStat, individualStat, effortStat);
+        List<Capacity> capacities = pokemonDto.getCapacities().stream().map(capacity -> Capacity.fromDto(capacity)).toList();
 
         Teammate teammate = new Teammate(
                 UUID.randomUUID(),
@@ -48,6 +50,7 @@ public class TeammateService {
                 effortStat,
                 stat,
                 stat,
+                capacities,
                 pokemon);
 
         teammateRepository.save(teammate);

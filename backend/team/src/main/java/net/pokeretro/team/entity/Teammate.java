@@ -1,5 +1,6 @@
 package net.pokeretro.team.entity;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -20,12 +21,13 @@ public class Teammate {
     private Stat effortStat;
     private Stat stat;
     private Stat currentStat;
+    private List<Capacity> capacities;
     private Pokemon pokemon;
 
     public Teammate() {
     }
 
-    public Teammate(UUID id, UUID trainerUuid, Integer position, String name, Integer level, Long xp, Stat baseStat, Stat individualStat, Stat effortStat,Stat stat, Stat currentStat, Pokemon pokemon) {
+    public Teammate(UUID id, UUID trainerUuid, Integer position, String name, Integer level, Long xp, Stat baseStat, Stat individualStat, Stat effortStat,Stat stat, Stat currentStat, List<Capacity> capacities, Pokemon pokemon) {
         this.id = id;
         this.trainerUuid = trainerUuid;
         this.position = position;
@@ -37,6 +39,7 @@ public class Teammate {
         this.effortStat = effortStat;
         this.stat = stat;
         this.currentStat = currentStat;
+        this.capacities = capacities;
         this.pokemon = pokemon;
     }
 
@@ -102,6 +105,10 @@ public class Teammate {
 
     public void setCurrentStat(Stat currentStat) {
         this.currentStat = currentStat;
+    }
+
+    public List<Capacity> getCapacities() {
+        return capacities;
     }
 
     public Pokemon getPokemon() {
