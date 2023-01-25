@@ -83,7 +83,7 @@ public class Pokemon {
     }
 
     public PokemonDTO toDto() {
-        List<CapacityDTO> capacities = this.capacities.stream().map(capacity -> capacity.getCapacity().toDto()).toList();
+        List<CapacityDTO> capacities = this.capacities.stream().map(capacity -> capacity.toDto()).toList();
         List<String> types = this.types.stream().map(type -> type.getName()).toList();
         Integer evolutionId = this.evolution != null ? this.evolution.getId() : null;
         StatDTO individualStat = this.individualStat != null ? this.individualStat.toDto() : null;

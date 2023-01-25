@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import net.pokeretro.pokemon.dto.CapacityDTO;
 
 @Entity
 @Table(name = "pokemon_capacity")
@@ -41,5 +42,16 @@ public class PokemonCapacity {
 
     public Integer getLevel() {
         return this.level;
+    }
+
+    public CapacityDTO toDto() {
+        return new CapacityDTO(
+                capacity.getName(),
+                capacity.getCategory(),
+                capacity.getPower(),
+                capacity.getAccuracy(),
+                capacity.getPp(),
+                capacity.getType().getName(),
+                level);
     }
 }

@@ -27,6 +27,7 @@ public class PokemonService {
                 special);
 
         // Handle capacities for level 1
+        pokemon.getCapacities().removeIf(capacity -> capacity.getLevel() > 1);
 
         pokemon.setIndividualStat(individualStat);
 

@@ -7,14 +7,16 @@ public class CapacityDTO {
     private Integer accuracy;
     private Integer pp;
     private String type;
+    private Integer levelLearned;
 
-    public CapacityDTO(String name, String category, Integer power, Integer accuracy, Integer pp, String type) {
+    public CapacityDTO(String name, String category, Integer power, Integer accuracy, Integer pp, String type, Integer levelLearned) {
         this.name = name;
         this.category = category;
         this.power = power;
         this.accuracy = accuracy;
         this.pp = pp;
         this.type = type;
+        this.levelLearned = levelLearned;
     }
 
     public String getName() {
@@ -39,5 +41,9 @@ public class CapacityDTO {
 
     public String getType() {
         return type;
+    }
+
+    public Integer getLevelLearned() {
+        return levelLearned;
     }
 }
