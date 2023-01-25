@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import net.pokeretro.team.entity.PokemonDTO;
+import net.pokeretro.team.dto.PokemonDTO;
 import net.pokeretro.team.entity.Teammate;
 import net.pokeretro.team.repository.TeammateRepository;
 import net.pokeretro.team.service.TeammateService;
@@ -39,7 +39,7 @@ public class TeamController {
     @CrossOrigin
     @PostMapping("/team/{trainerUuid}")
     public ResponseEntity<Teammate> postTeam(@PathVariable UUID trainerUuid, @RequestBody PokemonDTO pokemonDto) {
-        return ResponseEntity.ok(teammateService.insertPokemon(trainerUuid, pokemonDto));
+        return ResponseEntity.ok(teammateService.addPokemon(trainerUuid, pokemonDto));
     }
 
     @CrossOrigin

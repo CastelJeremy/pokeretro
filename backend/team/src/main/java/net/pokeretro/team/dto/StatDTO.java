@@ -1,25 +1,20 @@
-package net.pokeretro.team.entity;
+package net.pokeretro.team.dto;
 
-import net.pokeretro.team.dto.StatDTO;
-
-public class Stat {
+public class StatDTO {
     private Integer hp;
     private Integer attack;
     private Integer defense;
     private Integer speed;
     private Integer special;
 
-    public Stat() {
-    }
-
-    public Stat(Integer hp, Integer attack, Integer defense, Integer speed, Integer special) {
+    public StatDTO(Integer hp, Integer attack, Integer defense, Integer speed, Integer special) {
         this.hp = hp;
         this.attack = attack;
         this.defense = defense;
         this.speed = speed;
         this.special = special;
     }
-    
+
     public Integer getHp() {
         return hp;
     }
@@ -38,14 +33,5 @@ public class Stat {
 
     public Integer getSpecial() {
         return special;
-    }
-
-    public static Stat fromDto(StatDTO statDTO) {
-        return new Stat(
-                statDTO.getHp(),
-                statDTO.getAttack(),
-                statDTO.getDefense(),
-                statDTO.getSpeed(),
-                statDTO.getSpecial());
     }
 }

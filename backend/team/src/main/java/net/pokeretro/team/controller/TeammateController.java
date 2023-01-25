@@ -22,13 +22,13 @@ public class TeammateController {
     TeammateRepository teammateRepository;
 
     @CrossOrigin
-    @PutMapping("/teammate/{id}")
-    public ResponseEntity<Teammate> putTeammate(@PathVariable UUID id, @RequestBody Teammate teammate) {
+    @PutMapping("/teammate/{trainerUuid}")
+    public ResponseEntity<Teammate> putTeammate(@PathVariable UUID trainerUuid, @RequestBody Teammate teammate) {
         if (teammate.getId() != null) {
             Optional<Teammate> res = teammateRepository.findById(teammate.getId());
 
-            // Check trainerUuid
-            if (res.isPresent()) {
+            // Check ownership
+            if (res.isPresent() && res.get().getTrainerUuid().equals(trainerUuid)) {
                 System.out.println(teammate.getId());
                 Teammate t = res.get();
 
@@ -45,6 +45,8 @@ public class TeammateController {
                 }
 
                 // handle evolution
+
+                // handle ev
 
                 // handle capacity
 

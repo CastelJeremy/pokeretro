@@ -16,14 +16,28 @@ public class Teammate {
     private Integer level;
     private Long xp;
     private Stat baseStat;
-    private Stat activeStat;
+    private Stat individualStat;
+    private Stat effortStat;
+    private Stat stat;
+    private Stat currentStat;
     private Pokemon pokemon;
 
     public Teammate() {
     }
 
-    public Teammate(UUID id) {
+    public Teammate(UUID id, UUID trainerUuid, Integer position, String name, Integer level, Long xp, Stat baseStat, Stat individualStat, Stat effortStat,Stat stat, Stat currentStat, Pokemon pokemon) {
         this.id = id;
+        this.trainerUuid = trainerUuid;
+        this.position = position;
+        this.name = name;
+        this.level = level;
+        this.xp = xp;
+        this.baseStat = baseStat;
+        this.individualStat = individualStat;
+        this.effortStat = effortStat;
+        this.stat = stat;
+        this.currentStat = currentStat;
+        this.pokemon = pokemon;
     }
 
     public UUID getId() {
@@ -32,10 +46,6 @@ public class Teammate {
 
     public UUID getTrainerUuid() {
         return this.trainerUuid;
-    }
-
-    public void setTrainerUuid(UUID trainerUuid) {
-        this.trainerUuid = trainerUuid;
     }
 
     public Integer getPosition() {
@@ -74,16 +84,24 @@ public class Teammate {
         return this.baseStat;
     }
 
-    public void setBaseStat(Stat baseStat) {
-        this.baseStat = baseStat;
+    public Stat getIndividualStat() {
+        return individualStat;
     }
 
-    public Stat getActiveStat() {
-        return this.activeStat;
+    public Stat getEffortStat() {
+        return effortStat;
     }
 
-    public void setActiveStat(Stat activeStat) {
-        this.activeStat = activeStat;
+    public Stat getStat() {
+        return stat;
+    }
+
+    public Stat getCurrentStat() {
+        return currentStat;
+    }
+
+    public void setCurrentStat(Stat currentStat) {
+        this.currentStat = currentStat;
     }
 
     public Pokemon getPokemon() {
