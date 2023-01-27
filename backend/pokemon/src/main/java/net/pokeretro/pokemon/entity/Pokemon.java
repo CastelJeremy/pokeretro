@@ -46,6 +46,10 @@ public class Pokemon {
     @JoinColumn(name = "id_evolution")
     private Pokemon evolution;
 
+    private String rarityTier;
+
+    private Integer baseExperience;
+
     public Integer getId() {
         return this.id;
     }
@@ -87,7 +91,26 @@ public class Pokemon {
         List<String> types = this.types.stream().map(type -> type.getName()).toList();
         Integer evolutionId = this.evolution != null ? this.evolution.getId() : null;
         StatDTO individualStat = this.individualStat != null ? this.individualStat.toDto() : null;
+        Integer rarity = baseExperience;
 
-        return new PokemonDTO(this.id, this.name, types, capacities, this.baseStat.toDto(), individualStat, this.evolutionLevel, evolutionId);
+        Double rariryCoefficient = 0D;
+        switch (rarityTier) {
+            case "Common":
+            rariryCoefficient = 0.25;
+            break;
+            case "Uncommon":
+            rariryCoefficient = 0.5;
+            break;
+            case "Rare":
+            rariryCoefficient = 0.75;
+            break;
+            case "Unhuntable":
+            rariryCoefficient = 1D;
+            break;
+        }
+
+        rarity += (int) Math.floor(rarity * rariryCoefficient);
+
+        return new PokemonDTO(this.id, this.name, types, capacities, this.baseStat.toDto(), individualStat, this.evolutionLevel, evolutionId, rarity);
     }
 }

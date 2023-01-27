@@ -36,6 +36,15 @@ public class PokemonController {
     }
 
     @CrossOrigin
+    @GetMapping("/pokemons/eggable")
+    public ResponseEntity<List<PokemonDTO>> getPokemonsEggable() {
+        List<Pokemon> pokemons = pokemonRepository.findAllEggable();
+        List<PokemonDTO> pokemonDTOs = pokemons.stream().map(pokemon -> pokemon.toDto()).toList();
+
+        return ResponseEntity.ok(pokemonDTOs);
+    }
+
+    @CrossOrigin
     @GetMapping("/pokemons/{id}")
     public ResponseEntity<PokemonDTO> getPokemon(@PathVariable Integer id) {
         Optional<Pokemon> pokemon = pokemonRepository.findById(id);
