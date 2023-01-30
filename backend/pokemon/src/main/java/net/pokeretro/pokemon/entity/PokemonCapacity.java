@@ -52,6 +52,7 @@ public class PokemonCapacity {
                 capacity.getAccuracy(),
                 capacity.getPp(),
                 capacity.getType().getName(),
+                0,
                 level);
     }
 }
