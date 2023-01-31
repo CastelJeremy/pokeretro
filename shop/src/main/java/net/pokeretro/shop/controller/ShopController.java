@@ -28,11 +28,11 @@ public class ShopController {
     private OfferRepository offerRepository;
 
     @GetMapping(value = "/shop")
-    public ResponseEntity<Shop> showShop(@RequestParam StringModel category) throws CategoryNotFoundException {
-        if(category.getValue().equals("base")){
+    public ResponseEntity<Shop> showShop(@RequestParam String category) throws CategoryNotFoundException {
+        if(category.equals("base")){
             Optional<Shop> shop = shopRepository.findById(UUID.fromString("0cdad3af-d414-4013-acf7-0c9c1195e9c3"));
             return shop.map(ResponseEntity::ok).orElse(null);
-        } else if (category.getValue().equals("community")) {
+        } else if (category.equals("community")) {
             Optional<Shop> shop = shopRepository.findById(UUID.fromString("2f250d17-b179-4073-9b28-09d10af6079c"));
             return shop.map(ResponseEntity::ok).orElse(null);
         } else throw new CategoryNotFoundException();
