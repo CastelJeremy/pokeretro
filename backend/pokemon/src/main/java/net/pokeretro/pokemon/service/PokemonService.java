@@ -1,14 +1,20 @@
 package net.pokeretro.pokemon.service;
 
+import java.util.List;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.pokeretro.pokemon.entity.Pokemon;
 import net.pokeretro.pokemon.entity.Stat;
+import net.pokeretro.pokemon.repository.PokemonRepository;
 
 @Service
 public class PokemonService {
+    @Autowired
+    PokemonRepository pokemonRepository;
+
     public Pokemon generate(Pokemon pokemon) {
         Random rand = new Random();
 
@@ -32,5 +38,14 @@ public class PokemonService {
         pokemon.setIndividualStat(individualStat);
 
         return pokemon;
+    }
+
+    public Pokemon generateRandom() {
+        List<Pokemon> pokemons = pokemonRepository.findAll();
+        Random rand = new Random();
+
+        Pokemon pokemon = pokemons.get(rand.nextInt(pokemons.size()));
+
+        return generate(pokemon);
     }
 }

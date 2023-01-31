@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -56,8 +55,14 @@ public class PokemonController {
     }
 
     @CrossOrigin
-    @PostMapping("/pokemons/{id}/generate")
-    public ResponseEntity<PokemonDTO> postPokemon(@PathVariable Integer id) {
+    @GetMapping("/pokemons/generate")
+    public ResponseEntity<PokemonDTO> generateRandomPokemon() {
+        return ResponseEntity.ok(pokemonService.generateRandom().toDto());
+    }
+
+    @CrossOrigin
+    @GetMapping("/pokemons/{id}/generate")
+    public ResponseEntity<PokemonDTO> generatePokemon(@PathVariable Integer id) {
         Optional<Pokemon> pokemon = pokemonRepository.findById(id);
 
         if (pokemon.isPresent()) {

@@ -10,7 +10,8 @@ public class CapacityDTO {
     private Integer useCount;
     private Integer levelLearned;
 
-    public CapacityDTO(String name, String category, Integer power, Integer accuracy, Integer pp, String type, Integer useCount, Integer levelLearned) {
+    public CapacityDTO(String name, String category, Integer power, Integer accuracy, Integer pp, String type,
+            Integer useCount, Integer levelLearned) {
         this.name = name;
         this.category = category;
         this.power = power;

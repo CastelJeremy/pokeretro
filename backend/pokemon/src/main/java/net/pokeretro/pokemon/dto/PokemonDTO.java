@@ -13,7 +13,8 @@ public class PokemonDTO {
     private Integer evolutionId;
     private Integer rarity;
 
-    public PokemonDTO(Integer id, String name, List<String> types, List<CapacityDTO> capacities, StatDTO baseStat, StatDTO individualStat, Integer evolutionLevel, Integer evolutionId, Integer rarity) {
+    public PokemonDTO(Integer id, String name, List<String> types, List<CapacityDTO> capacities, StatDTO baseStat,
+            StatDTO individualStat, Integer evolutionLevel, Integer evolutionId, Integer rarity) {
         this.id = id;
         this.name = name;
         this.types = types;
