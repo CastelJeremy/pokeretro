@@ -27,6 +27,7 @@ public class ShopController {
     @Autowired
     private OfferRepository offerRepository;
 
+    @CrossOrigin
     @GetMapping(value = "/shop")
     public ResponseEntity<Shop> showShop(@RequestParam String category) throws CategoryNotFoundException {
         if(category.equals("base")){
@@ -38,6 +39,7 @@ public class ShopController {
         } else throw new CategoryNotFoundException();
     }
 
+    @CrossOrigin
     @PostMapping(value = "/shop/buy")
     public void buyEgg(@RequestParam Trainer buyer, @RequestBody Offer offer)
             throws IOException, NotEnoughMoneyException {
@@ -52,6 +54,7 @@ public class ShopController {
         }
     }
 
+    @CrossOrigin
     @PostMapping(value = "/shop/sell")
     public void sellEgg(@RequestParam Trainer seller, @RequestParam Egg egg, @RequestParam int price)
             throws IOException {
@@ -61,21 +64,25 @@ public class ShopController {
         offerRepository.save(new Offer(egg, price));
     }
 
+    @CrossOrigin
     @GetMapping(value = "/shop/sell")
     public Collection<Offer> getEggInSell(@RequestParam Trainer trainer) {
         return offerRepository.findAllBySeller(trainer);
     }
 
+    @CrossOrigin
     @PostMapping(value = "/shop/sell/cancel")
     public void cancelSell(@RequestParam Offer offer) {
 
     }
 
+    @CrossOrigin
     @GetMapping(value = "/shop/history")
     public void getShopHistory(@RequestParam Trainer trainer) {
 
     }
 
+    @CrossOrigin
     @PostMapping(value = "/shop/refresh")
     public void refreshShop() throws URISyntaxException {
         URI uri = new URI("http://localhost:8085/pokemons/eggable");
