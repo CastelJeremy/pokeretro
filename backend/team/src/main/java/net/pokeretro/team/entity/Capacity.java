@@ -9,17 +9,20 @@ public class Capacity {
     private Integer accuracy;
     private Integer pp;
     private String type;
+    private Integer useCount;
 
     public Capacity() {
     }
 
-    public Capacity(String name, String category, Integer power, Integer accuracy, Integer pp, String type) {
+    public Capacity(String name, String category, Integer power, Integer accuracy, Integer pp, String type,
+            Integer useCount) {
         this.name = name;
         this.category = category;
         this.power = power;
         this.accuracy = accuracy;
         this.pp = pp;
         this.type = type;
+        this.useCount = useCount;
     }
 
     public String getName() {
@@ -46,6 +49,10 @@ public class Capacity {
         return this.type;
     }
 
+    public Integer getUseCount() {
+        return useCount;
+    }
+
     public static Capacity fromDto(CapacityDTO capacityDTO) {
         return new Capacity(
                 capacityDTO.getName(),
@@ -53,6 +60,11 @@ public class Capacity {
                 capacityDTO.getPower(),
                 capacityDTO.getAccuracy(),
                 capacityDTO.getPp(),
-                capacityDTO.getType());
+                capacityDTO.getType(),
+                capacityDTO.getUseCount());
+    }
+
+    public CapacityDTO toDto() {
+        return new CapacityDTO(name, category, power, accuracy, pp, type, useCount, null);
     }
 }

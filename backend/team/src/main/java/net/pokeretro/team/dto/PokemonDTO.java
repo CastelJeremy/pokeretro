@@ -11,8 +11,10 @@ public class PokemonDTO {
     private StatDTO individualStat;
     private Integer evolutionLevel;
     private Integer evolutionId;
+    private Integer rarity;
 
-    public PokemonDTO(Integer id, String name, List<String> types, List<CapacityDTO> capacities, StatDTO baseStat, StatDTO individualStat, Integer evolutionLevel, Integer evolutionId) {
+    public PokemonDTO(Integer id, String name, List<String> types, List<CapacityDTO> capacities, StatDTO baseStat,
+            StatDTO individualStat, Integer evolutionLevel, Integer evolutionId, Integer rarity) {
         this.id = id;
         this.name = name;
         this.types = types;
@@ -21,6 +23,7 @@ public class PokemonDTO {
         this.individualStat = individualStat;
         this.evolutionLevel = evolutionLevel;
         this.evolutionId = evolutionId;
+        this.rarity = rarity;
     }
 
     public Integer getId() {
@@ -53,5 +56,9 @@ public class PokemonDTO {
 
     public Integer getEvolutionId() {
         return evolutionId;
+    }
+
+    public Integer getRarity() {
+        return rarity;
     }
 }

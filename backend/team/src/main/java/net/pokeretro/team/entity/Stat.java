@@ -19,7 +19,7 @@ public class Stat {
         this.speed = speed;
         this.special = special;
     }
-    
+
     public Integer getHp() {
         return hp;
     }
@@ -47,5 +47,9 @@ public class Stat {
                 statDTO.getDefense(),
                 statDTO.getSpeed(),
                 statDTO.getSpecial());
+    }
+
+    public StatDTO toDto() {
+        return new StatDTO(hp, attack, defense, speed, special);
     }
 }

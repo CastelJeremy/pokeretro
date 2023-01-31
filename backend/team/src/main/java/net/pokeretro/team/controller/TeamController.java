@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import net.pokeretro.team.dto.PokemonDTO;
+import net.pokeretro.team.dto.TeammateDTO;
 import net.pokeretro.team.entity.Teammate;
 import net.pokeretro.team.repository.TeammateRepository;
 import net.pokeretro.team.service.TeammateService;
@@ -32,24 +33,28 @@ public class TeamController {
 
     @CrossOrigin
     @GetMapping("/team/{trainerUuid}")
-    public ResponseEntity<List<Teammate>> getTeam(@PathVariable UUID trainerUuid) {
-        return ResponseEntity.ok(teammateRepository.findAllByTrainerUuid(trainerUuid));
+    public ResponseEntity<List<TeammateDTO>> getTeam(@PathVariable UUID trainerUuid) {
+        return ResponseEntity
+                .ok(teammateRepository.findAllByTrainerUuid(trainerUuid).stream().map(t -> t.toDto())
+                        .toList());
     }
 
     @CrossOrigin
     @PostMapping("/team/{trainerUuid}")
-    public ResponseEntity<Teammate> postTeam(@PathVariable UUID trainerUuid, @RequestBody PokemonDTO pokemonDto) {
-        return ResponseEntity.ok(teammateService.addPokemon(trainerUuid, pokemonDto));
+    public ResponseEntity<TeammateDTO> postTeam(@PathVariable UUID trainerUuid, @RequestBody PokemonDTO pokemonDto) {
+        return ResponseEntity.ok(teammateService.addPokemon(trainerUuid, pokemonDto).toDto());
     }
 
     @CrossOrigin
     @DeleteMapping("/team/{trainerUuid}")
-    public ResponseEntity<List<Teammate>> deleteTeam(@PathVariable UUID trainerUuid, @RequestBody Teammate teammate) {
+    public ResponseEntity<List<TeammateDTO>> deleteTeam(@PathVariable UUID trainerUuid,
+            @RequestBody Teammate teammate) {
         if (teammate.getId() != null) {
             Optional<Teammate> res = teammateRepository.findById(teammate.getId());
 
             if (res.isPresent() && res.get().getTrainerUuid().equals(trainerUuid)) {
-                return ResponseEntity.ok(teammateService.removeTeammate(trainerUuid, res.get()));
+                return ResponseEntity.ok(teammateService.removeTeammate(trainerUuid, res.get()).stream()
+                        .map(t -> t.toDto()).toList());
             }
 
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -60,14 +65,14 @@ public class TeamController {
 
     @CrossOrigin
     @PutMapping("/team/{trainerUuid}/heal")
-    public ResponseEntity<List<Teammate>> putTeamHeal(@PathVariable UUID trainerUuid) {
-        return ResponseEntity.ok(teammateService.healAll(trainerUuid));
+    public ResponseEntity<List<TeammateDTO>> putTeamHeal(@PathVariable UUID trainerUuid) {
+        return ResponseEntity.ok(teammateService.healAll(trainerUuid).stream().map(t -> t.toDto()).toList());
     }
 
     @CrossOrigin
     @PutMapping("/team/{trainerUuid}/swap")
-    public ResponseEntity<List<Teammate>> putTeamSwap(@PathVariable UUID trainerUuid,
-            @RequestBody List<Teammate> teammates) {
+    public ResponseEntity<List<TeammateDTO>> putTeamSwap(@PathVariable UUID trainerUuid,
+            @RequestBody List<TeammateDTO> teammates) {
         if (teammates.size() == 2 && teammates.get(0).getId() != null && teammates.get(1).getId() != null
                 && teammates.get(0).getId() != teammates.get(1).getId()) {
             Optional<Teammate> res1 = teammateRepository.findById(teammates.get(0).getId());
@@ -75,7 +80,8 @@ public class TeamController {
 
             if (res1.isPresent() && res1.get().getTrainerUuid().equals(trainerUuid) && res2.isPresent()
                     && res2.get().getTrainerUuid().equals(trainerUuid)) {
-                return ResponseEntity.ok(teammateService.swapTeammates(trainerUuid, res1.get(), res2.get()));
+                return ResponseEntity.ok(teammateService.swapTeammates(trainerUuid, res1.get(), res2.get()).stream()
+                        .map(t -> t.toDto()).toList());
             }
 
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

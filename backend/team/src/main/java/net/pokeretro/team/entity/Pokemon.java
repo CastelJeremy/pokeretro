@@ -9,7 +9,8 @@ public class Pokemon {
     private String name;
     private List<String> types;
 
-    public Pokemon() {}
+    public Pokemon() {
+    }
 
     public Pokemon(Integer id, String name, List<String> types) {
         this.id = id;
@@ -30,12 +31,10 @@ public class Pokemon {
     }
 
     public static Pokemon fromDto(PokemonDTO pokemonDTO) {
-        Pokemon pokemon = new Pokemon(
-            pokemonDTO.getId(),
-            pokemonDTO.getName(),
-            pokemonDTO.getTypes()
-        );
+        return new Pokemon(pokemonDTO.getId(), pokemonDTO.getName(), pokemonDTO.getTypes());
+    }
 
-        return pokemon;
+    public PokemonDTO toDto() {
+        return new PokemonDTO(id, name, types, null, null, null, null, null, null);
     }
 }

@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import net.pokeretro.team.dto.TeammateDTO;
+
 @Document("teammates")
 public class Teammate {
     @Id
@@ -27,7 +29,9 @@ public class Teammate {
     public Teammate() {
     }
 
-    public Teammate(UUID id, UUID trainerUuid, Integer position, String name, Integer level, Long xp, Stat baseStat, Stat individualStat, Stat effortStat,Stat stat, Stat currentStat, List<Capacity> capacities, Pokemon pokemon) {
+    public Teammate(UUID id, UUID trainerUuid, Integer position, String name, Integer level, Long xp, Stat baseStat,
+            Stat individualStat, Stat effortStat, Stat stat, Stat currentStat, List<Capacity> capacities,
+            Pokemon pokemon) {
         this.id = id;
         this.trainerUuid = trainerUuid;
         this.position = position;
@@ -117,5 +121,39 @@ public class Teammate {
 
     public void setPokemon(Pokemon pokemon) {
         this.pokemon = pokemon;
+    }
+
+    public static Teammate fromDto(TeammateDTO teammateDTO) {
+        return new Teammate(
+                teammateDTO.getId(),
+                teammateDTO.getTrainerUuid(),
+                teammateDTO.getPosition(),
+                teammateDTO.getName(),
+                teammateDTO.getLevel(),
+                teammateDTO.getXp(),
+                Stat.fromDto(teammateDTO.getBaseStat()),
+                Stat.fromDto(teammateDTO.getIndividualStat()),
+                Stat.fromDto(teammateDTO.getEffortStat()),
+                Stat.fromDto(teammateDTO.getStat()),
+                Stat.fromDto(teammateDTO.getCurrentStat()),
+                teammateDTO.getCapacities().stream().map(capacity -> Capacity.fromDto(capacity)).toList(),
+                Pokemon.fromDto(teammateDTO.getPokemon()));
+    }
+
+    public TeammateDTO toDto() {
+        return new TeammateDTO(
+                id,
+                trainerUuid,
+                position,
+                name,
+                level,
+                xp,
+                baseStat.toDto(),
+                individualStat.toDto(),
+                effortStat.toDto(),
+                stat.toDto(),
+                currentStat.toDto(),
+                capacities.stream().map(capacity -> capacity.toDto()).toList(),
+                pokemon.toDto());
     }
 }

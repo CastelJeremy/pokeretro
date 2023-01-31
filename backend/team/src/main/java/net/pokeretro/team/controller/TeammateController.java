@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import net.pokeretro.team.dto.TeammateDTO;
 import net.pokeretro.team.entity.Teammate;
 import net.pokeretro.team.repository.TeammateRepository;
 
@@ -23,7 +24,7 @@ public class TeammateController {
 
     @CrossOrigin
     @PutMapping("/teammate/{trainerUuid}")
-    public ResponseEntity<Teammate> putTeammate(@PathVariable UUID trainerUuid, @RequestBody Teammate teammate) {
+    public ResponseEntity<TeammateDTO> putTeammate(@PathVariable UUID trainerUuid, @RequestBody TeammateDTO teammate) {
         if (teammate.getId() != null) {
             Optional<Teammate> res = teammateRepository.findById(teammate.getId());
 
@@ -52,7 +53,7 @@ public class TeammateController {
 
                 teammateRepository.save(t);
 
-                return ResponseEntity.ok(t);
+                return ResponseEntity.ok(t.toDto());
             }
 
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
