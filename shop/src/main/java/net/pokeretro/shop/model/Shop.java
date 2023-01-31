@@ -30,4 +30,8 @@ public abstract class Shop {
     public Collection<Offer> getOffers() {
         return offers;
     }
+
+    public void setOffers(Collection<Offer> offers) {
+        this.offers = offers;
+    }
 }

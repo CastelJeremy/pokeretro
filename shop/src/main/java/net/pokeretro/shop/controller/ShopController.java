@@ -10,12 +10,13 @@ import net.pokeretro.shop.utils.RequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class ShopController {
@@ -76,7 +77,26 @@ public class ShopController {
     }
 
     @PostMapping(value = "/shop/refresh")
-    public void refreshShop() {
+    public void refreshShop() throws URISyntaxException {
+        URI uri = new URI("http://localhost:8085/pokemons/eggable");
 
+        RestTemplate restTemplate = new RestTemplate();
+        PokemonDTO[] eggable = restTemplate.getForObject(uri, PokemonDTO[].class);
+        List<Offer> result = new ArrayList<>();
+
+        if(eggable != null) {
+            while (result.size() < 6) {
+                PokemonDTO pokemon = eggable[new Random().nextInt(eggable.length-1)];
+                int rand = new Random().nextInt(100);
+                result.add(new Offer(new Egg(UUID.randomUUID(), rand, rand/2, pokemon.getId()), pokemon.getRarity()));
+            }
+        }
+
+        Optional<Shop> shopOptional = shopRepository.findById(UUID.fromString("0cdad3af-d414-4013-acf7-0c9c1195e9c3"));
+        if(shopOptional.isPresent()) {
+            Shop shop = shopOptional.get();
+            shop.setOffers(result);
+            shopRepository.save(shop);
+        }
     }
 }

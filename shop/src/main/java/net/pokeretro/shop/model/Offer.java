@@ -30,6 +30,7 @@ public class Offer {
     public Offer(Egg egg, Integer price) {
         this.egg = egg;
         this.price = price;
+        this.seller = null;
     }
 
     public UUID getId() {
