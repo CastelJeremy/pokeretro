@@ -38,6 +38,8 @@ public class TeammateService {
         Stat stat = statService.processStat(1, baseStat, individualStat, effortStat);
         List<Capacity> capacities = pokemonDto.getCapacities().stream().map(capacity -> Capacity.fromDto(capacity)).toList();
 
+        capacities.stream().forEach(c -> c.setUseCount(0));
+
         Teammate teammate = new Teammate(
                 UUID.randomUUID(),
                 trainerUuid,

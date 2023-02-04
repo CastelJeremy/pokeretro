@@ -53,6 +53,10 @@ public class Capacity {
         return useCount;
     }
 
+    public void setUseCount(Integer useCount) {
+        this.useCount = useCount;
+    }
+
     public static Capacity fromDto(CapacityDTO capacityDTO) {
         return new Capacity(
                 capacityDTO.getName(),
