@@ -1,5 +1,6 @@
 package net.pokeretro.incubator.controller;
 
+import net.pokeretro.incubator.exception.NotEnoughPlaceException;
 import net.pokeretro.incubator.model.*;
 import net.pokeretro.incubator.respositories.EggRepository;
 import net.pokeretro.incubator.respositories.IncubatorRepository;
@@ -44,7 +45,7 @@ public class IncubatorController {
     }
 
     @PostMapping(value = "/incubator/place")
-    public void placeEgg(@RequestParam UUID idTrainer, @RequestBody EggDTO egg) {
+    public void placeEgg(@RequestParam UUID idTrainer, @RequestBody EggDTO egg) throws NotEnoughPlaceException {
         Optional<Incubator> optionalIncubator = incubatorRepository.findByIdTrainer(idTrainer);
 
         //TODO IF_EMPTY
@@ -52,9 +53,15 @@ public class IncubatorController {
             Incubator incubator = optionalIncubator.get();
 
             egg.setIncubationStartDate(Date.from(Instant.now()));
-            Egg eggEntity = eggRepository.save(new Egg(egg, incubator));
-            optionalIncubator.get().addEgg(eggEntity);
-            incubatorRepository.save(incubator);
+            Egg eggEntity = new Egg(egg, incubator);
+            if(optionalIncubator.get().addEgg(eggEntity)) {
+                //Egg added
+                eggRepository.save(eggEntity);
+                incubatorRepository.save(incubator);
+            } else {
+                //Not enough place (Weight > 3000)
+                throw new NotEnoughPlaceException();
+            }
         }
     }
 
