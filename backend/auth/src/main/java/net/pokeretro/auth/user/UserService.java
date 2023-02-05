@@ -3,7 +3,11 @@ package net.pokeretro.auth.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import net.pokeretro.auth.exception.UserCreateException;
+import net.pokeretro.auth.exception.UserValidateException;
+import net.pokeretro.auth.security.PasswordHash;
+
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Service
@@ -11,23 +15,34 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public Optional<User> getUser(final Long id) {
-        return userRepository.findById(id);
+    public User create(User user) throws UserCreateException, NoSuchAlgorithmException {
+        if (user.getPassword().length() > 8 && user.getUsername().length() > 4) {
+            Optional<User> optUser = userRepository.findByUsername(user.getUsername());
+
+            if (optUser.isEmpty()) {
+                User newUser = new User(user.getUsername(), PasswordHash.hash(user.getPassword()));
+                userRepository.save(newUser);
+
+                return newUser;
+            }
+        }
+
+        throw new UserCreateException();
     }
 
-    public Collection<User> getUsers() {
-        return userRepository.findAll();
-    }
+    public void validate(User user) throws UserValidateException, NoSuchAlgorithmException {
+        Optional<User> optUser = userRepository.findByUsername(user.getUsername());
 
-    public Optional<User> findIdByUsername(final String username) {
-        return userRepository.findIdByUsername(username);
-    }
+        if (optUser.isPresent()) {
+            User existingUser = optUser.get();
+            String inputPassHash = PasswordHash.hash(user.getPassword());
 
-    public void deleteUser(final Long id) {
-        userRepository.deleteById(id);
-    }
+            if (existingUser.getPassword().equals(inputPassHash)
+                    && existingUser.getUsername().equals(user.getUsername())) {
+                return;
+            }
+        }
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
+        throw new UserValidateException();
     }
 }

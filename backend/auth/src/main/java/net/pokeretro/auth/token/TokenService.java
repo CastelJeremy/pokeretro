@@ -32,17 +32,19 @@ public class TokenService {
         key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String createToken(String username) {
-        return Jwts.builder()
-                .setIssuer(issuer)
-                .setSubject(username)
-                .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plus(expirationDelay, expirationUnit)))
-                .signWith(
-                        key,
-                        SignatureAlgorithm.HS256
-                )
-                .compact();
+    public Token create(String username) {
+        Token token = new Token(
+                Jwts.builder()
+                        .setIssuer(issuer)
+                        .setSubject(username)
+                        .setIssuedAt(Date.from(Instant.now()))
+                        .setExpiration(Date.from(Instant.now().plus(expirationDelay, expirationUnit)))
+                        .signWith(
+                                key,
+                                SignatureAlgorithm.HS256)
+                        .compact());
+
+        return token;
     }
 
     public Jws<Claims> parseToken(String token)
@@ -61,7 +63,8 @@ public class TokenService {
     /**
      *
      * @param token est le token à valider
-     * @return un code de retour (-1=UNKNOWN_ERROR,0=OK,1=EXPIRED,2=WRONG_SIGNATURE,3=UNSUPPORTED_TOKEN,4=MALFORMED_TOKEN,5=ILLEGAL_ARGUMENT)
+     * @return un code de retour
+     *         (-1=UNKNOWN_ERROR,0=OK,1=EXPIRED,2=WRONG_SIGNATURE,3=UNSUPPORTED_TOKEN,4=MALFORMED_TOKEN,5=ILLEGAL_ARGUMENT)
      */
     public int isTokenValid(String token) {
         try {
@@ -90,14 +93,30 @@ public class TokenService {
         }
     }
 
-    public String refreshToken(String token) throws InvalidTokenException {
-        int tokenValidity = isTokenValid(token);
-        if(tokenValidity == 0) {
-            String username = parseToken(token).getBody().getSubject();
-            return createToken(username);
-        } else {
-            throw new InvalidTokenException(tokenValidity);
+    public boolean isValid(Token token) {
+        parseToken(token.getToken());
+
+        return true;
+    }
+
+    public void isActive(Token token) throws InvalidTokenException {
+        if (isValid(token) && !isBlacklisted(token)) {
+            return;
         }
+
+        throw new InvalidTokenException("");
+    }
+
+    public Token refresh(Token token) throws InvalidTokenException {
+        if (isValid(token) && !isBlacklisted(token)) {
+            String username = parseToken(token.getToken()).getBody().getSubject();
+
+            addTokenToBlacklist(token.getToken());
+
+            return create(username);
+        }
+
+        throw new InvalidTokenException("");
     }
 
     public void addTokenToBlacklist(final String token) {
@@ -112,11 +131,15 @@ public class TokenService {
                 .collect(Collectors.toList()));
     }
 
+    public boolean isBlacklisted(Token token) {
+        return tokenBlacklist.findById(token.getToken()).isPresent();
+    }
+
     public boolean isTokenExpired(final String token) {
         return tokenBlacklist.findById(token).isPresent();
     }
 
-    public Date getTokenExpiration(final Token token){
+    public Date getTokenExpiration(final Token token) {
         try {
             return parseToken(token.toString()).getBody().getExpiration();
         } catch (ExpiredJwtException e) {

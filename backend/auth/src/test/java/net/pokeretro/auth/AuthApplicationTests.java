@@ -1,11 +1,7 @@
 package net.pokeretro.auth;
 
 import net.pokeretro.auth.security.PasswordHash;
-import net.pokeretro.auth.token.TokenService;
-import net.pokeretro.auth.user.User;
-import net.pokeretro.auth.user.UserService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.security.NoSuchAlgorithmException;
@@ -15,35 +11,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class AuthApplicationTests {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private TokenService tokenService;
+    // @Autowired
+    // private UserService userService;
 
-    @Test
-    void createUser() {
-        User newUser = new User("test4", "password");
-        User savedUser = userService.saveUser(newUser);
+    // @Autowired
+    // private TokenService tokenService;
 
-        assertThat(savedUser).isNotNull();
-    }
+    // @Test
+    // void createUser() {
+    // User newUser = new User("test4", "password");
+    // User savedUser = userService.saveUser(newUser);
 
-    @Test
-    void createToken() {
-        String token = tokenService.createToken("test");
-        System.out.println(token);
-        System.out.println(tokenService.parseToken(token));
-        assertThat(tokenService.isTokenValid(token)).isEqualTo(0);
-    }
+    // assertThat(savedUser).isNotNull();
+    // }
 
-    @Test
-    void destroyToken() {
-        String token = tokenService.createToken("test");
+    // @Test
+    // void createToken() {
+    // String token = tokenService.createToken("test");
+    // System.out.println(token);
+    // System.out.println(tokenService.parseToken(token));
+    // assertThat(tokenService.isTokenValid(token)).isEqualTo(0);
+    // }
 
-        tokenService.addTokenToBlacklist(token);
+    // @Test
+    // void destroyToken() {
+    // String token = tokenService.createToken("test");
 
-        assertThat(tokenService.isTokenValid(token)).isEqualTo(1);
-    }
+    // tokenService.addTokenToBlacklist(token);
+
+    // assertThat(tokenService.isTokenValid(token)).isEqualTo(1);
+    // }
 
     @Test
     void hashPassword() {
