@@ -1,44 +1,54 @@
 package net.pokeretro.trainer.controller;
 
-import net.pokeretro.trainer.trainer.Trainer;
-import net.pokeretro.trainer.trainer.TrainerService;
+import net.pokeretro.trainer.entity.Trainer;
+import net.pokeretro.trainer.exception.TrainerCreateException;
+import net.pokeretro.trainer.repository.TrainerRepository;
+import net.pokeretro.trainer.service.TrainerService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 public class TrainerController {
     @Autowired
-    private TrainerService service;
-    @RequestMapping(value="/create", method = RequestMethod.POST)
-    public ResponseEntity<Trainer> create (@RequestBody Trainer trainer)
-    {
-        if (!Objects.equals(trainer.getGender(), "boy") && !Objects.equals(trainer.getGender(), "girl"))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        else if (!Objects.equals(trainer.getStarter(), 1) && !Objects.equals(trainer.getStarter(), 4) && !Objects.equals(trainer.getStarter(), 7))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        else {
-            Trainer newTrainer = new Trainer(trainer.getUsername(), trainer.getGender(), trainer.getStarter());
-            service.saveTrainer(newTrainer);
-            if (service.getTrainer(newTrainer.getId()).isPresent())
-                return ResponseEntity.ok(service.getTrainer(newTrainer.getId()).get());
-            else
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    private TrainerRepository trainerRepository;
+
+    @Autowired
+    private TrainerService trainerService;
+
+    @PostMapping("trainer")
+    public ResponseEntity<Trainer> create(@RequestBody Trainer trainer) {
+        try {
+            return ResponseEntity.ok(trainerService.create(trainer));
+        } catch (TrainerCreateException e) {
+
         }
+
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/trainer/{id}", method = RequestMethod.GET)
-    public Collection<Trainer> giveTrainerById (@PathVariable("id") UUID id)
-    {
-        if(service.getTrainer(id).stream().toList().isEmpty())
-            return service.getTrainers().stream().toList();
-        else
-            return service.getTrainer(id).stream().toList();
+    @GetMapping("/trainer/{id}")
+    public ResponseEntity<Trainer> getTrainerById(@PathVariable("id") UUID id) {
+        Optional<Trainer> trainer = trainerRepository.findById(id);
+
+        if (trainer.isPresent()) {
+            return ResponseEntity.ok(trainer.get());
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/trainer/user/{userId}")
+    public ResponseEntity<List<Trainer>> getTrainersByUserId(@PathVariable("userId") UUID userId) {
+        List<Trainer> trainers = trainerRepository.findAllByUserId(userId);
+
+        return ResponseEntity.ok(trainers);
     }
 }

@@ -1,6 +1,7 @@
 CREATE TABLE trainers (
-	id		uuid 		NOT NULL,
-	username	VARCHAR(50)	NOT NULL,
-	gender		VARCHAR(50)	NOT NULL,
-	CONSTRAINT trainer_pk PRIMARY KEY (id)
+	id uuid PRIMARY KEY,
+	user_id uuid NOT NULL,
+	name VARCHAR(16) NOT NULL,
+	gender VARCHAR(8) NOT NULL,
+	starter INT NOT NULL
 );
