@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "incubator")
@@ -12,8 +13,15 @@ public class Incubator {
     @Column(name = "id_trainer", nullable = false)
     private UUID idTrainer;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "incubator")
-    private Collection<Egg> eggs = new java.util.ArrayList<>();
+    @OneToMany(mappedBy = "incubator")
+    private final Collection<Egg> eggs = new java.util.ArrayList<>();
+
+    public Incubator() {
+    }
+
+    public Incubator(UUID idTrainer) {
+        this.idTrainer = idTrainer;
+    }
 
     public Collection<Egg> getEggs() {
         return eggs;
@@ -37,5 +45,9 @@ public class Incubator {
      */
     public int getWeight(){
         return eggs.stream().map(Egg::getWeight).reduce(Integer::sum).orElse(0);
+    }
+
+    public IncubatorDTO toDTO() {
+        return new IncubatorDTO(getIdTrainer(), getEggs().stream().map(Egg::toDto).collect(Collectors.toList()));
     }
 }

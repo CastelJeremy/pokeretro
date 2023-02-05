@@ -5,10 +5,14 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "eggs")
 public class Egg {
+    @Id
+    @Column(name = "id", nullable = false)
+    private UUID id;
 
     @Column(name = "time")
     private Integer time;
@@ -22,10 +26,36 @@ public class Egg {
     @Column(name = "id_pokemon")
     private Integer idPokemon;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "incubator_id_trainer")
     private Incubator incubator;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Egg() {
+    }
+
+    public Egg(Integer time, Date incubationStartDate, Integer weight, Integer idPokemon, Incubator incubator) {
+        this.time = time;
+        this.incubationStartDate = incubationStartDate;
+        this.weight = weight;
+        this.idPokemon = idPokemon;
+        this.incubator = incubator;
+    }
+
+    public Egg(EggDTO dto, Incubator incubator) {
+        this.time = dto.getTime();
+        this.incubationStartDate = dto.getIncubationStartDate();
+        this.weight = dto.getWeight();
+        this.idPokemon = dto.getIdPokemon();
+        this.incubator = incubator;
+    }
 
     public Incubator getIncubator() {
         return incubator;
@@ -43,6 +73,10 @@ public class Egg {
         return incubationStartDate;
     }
 
+    public void setIncubationStartDate(Date incubationStartDate) {
+        this.incubationStartDate = incubationStartDate;
+    }
+
     public Long getTimeLeft() {
         long start = incubationStartDate.toInstant().getEpochSecond();
         long end = incubationStartDate.toInstant().plus(time, ChronoUnit.SECONDS).getEpochSecond();
@@ -50,12 +84,8 @@ public class Egg {
     }
 
     public boolean isIncubationFinished() {
-        if(incubationStartDate != null &&
-                incubationStartDate.toInstant().plus(time, ChronoUnit.SECONDS).isAfter(Instant.now()) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return incubationStartDate != null &&
+                incubationStartDate.toInstant().plus(time, ChronoUnit.SECONDS).isBefore(Instant.now());
     }
 
     public Integer getWeight() {
@@ -64,5 +94,21 @@ public class Egg {
 
     public Integer getIdPokemon() {
         return idPokemon;
+    }
+
+    @Override
+    public String toString() {
+        return "Egg{" +
+                "id=" + id +
+                ", time=" + time +
+                ", incubationStartDate=" + incubationStartDate +
+                ", weight=" + weight +
+                ", idPokemon=" + idPokemon +
+                ", incubator=" + incubator +
+                '}';
+    }
+
+    public EggDTO toDto(){
+        return new EggDTO(getId(), getTime(), getIncubationStartDate(), getWeight(), getIdPokemon());
     }
 }

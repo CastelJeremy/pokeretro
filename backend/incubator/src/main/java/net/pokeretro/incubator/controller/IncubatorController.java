@@ -1,8 +1,7 @@
 package net.pokeretro.incubator.controller;
 
-import net.pokeretro.incubator.model.Egg;
-import net.pokeretro.incubator.model.Incubator;
-import net.pokeretro.incubator.model.PokemonDTO;
+import net.pokeretro.incubator.model.*;
+import net.pokeretro.incubator.respositories.EggRepository;
 import net.pokeretro.incubator.respositories.IncubatorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,19 +10,31 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 public class IncubatorController {
 
     @Autowired
     private IncubatorRepository incubatorRepository;
+    @Autowired
+    private EggRepository eggRepository;
 
     @GetMapping(value = "/incubator")
-    public ResponseEntity<Incubator> getIncubator(@RequestParam UUID idTrainer) {
+    public ResponseEntity<IncubatorDTO> getIncubator(@RequestParam UUID idTrainer) {
         Optional<Incubator> optionalIncubator = incubatorRepository.findByIdTrainer(idTrainer);
-        return optionalIncubator.map(ResponseEntity::ok).orElse(null);
+
+        if(optionalIncubator.isEmpty()) {
+            Incubator newIncubator = new Incubator(idTrainer);
+            incubatorRepository.save(newIncubator);
+            return ResponseEntity.ok(newIncubator.toDTO());
+        } else {
+            return ResponseEntity.ok(optionalIncubator.get().toDTO());
+        }
     }
 
     @GetMapping(value = "/incubator/weight")
@@ -33,12 +44,17 @@ public class IncubatorController {
     }
 
     @PostMapping(value = "/incubator/place")
-    public void placeEgg(@RequestParam UUID idTrainer, @RequestBody Egg egg) {
+    public void placeEgg(@RequestParam UUID idTrainer, @RequestBody EggDTO egg) {
         Optional<Incubator> optionalIncubator = incubatorRepository.findByIdTrainer(idTrainer);
 
+        //TODO IF_EMPTY
         if(optionalIncubator.isPresent()){
-            optionalIncubator.get().addEgg(egg);
-            incubatorRepository.save(optionalIncubator.get());
+            Incubator incubator = optionalIncubator.get();
+
+            egg.setIncubationStartDate(Date.from(Instant.now()));
+            Egg eggEntity = eggRepository.save(new Egg(egg, incubator));
+            optionalIncubator.get().addEgg(eggEntity);
+            incubatorRepository.save(incubator);
         }
     }
 
@@ -46,12 +62,23 @@ public class IncubatorController {
     public ResponseEntity<PokemonDTO> hatchEgg(@RequestParam UUID idTrainer, @RequestBody Egg egg) throws URISyntaxException {
         Optional<Incubator> optionalIncubator = incubatorRepository.findByIdTrainer(idTrainer);
 
-        if(optionalIncubator.isPresent() && egg.isIncubationFinished()){
-            RestTemplate restTemplate = new RestTemplate();
-            return restTemplate.getForEntity(
-                    new URI("http://localhost:8083/pokemons/" + egg.getIdPokemon() + "/generate"),
-                    PokemonDTO.class);
+        if(optionalIncubator.isPresent()) {
+            Optional<Egg> optionalEggIncubated = optionalIncubator.get()
+                    .getEggs()
+                    .stream()
+                    .filter(egg1 -> egg1.getId().equals(egg.getId()))
+                    .findFirst();
+            if(optionalEggIncubated.isPresent()) {
+                Egg eggIncubated = optionalEggIncubated.get();
+
+                if(eggIncubated.isIncubationFinished()){
+                    RestTemplate restTemplate = new RestTemplate();
+                    return restTemplate.getForEntity(
+                            new URI("http://localhost:8083/pokemons/" + eggIncubated.getIdPokemon() + "/generate"),
+                            PokemonDTO.class);
+                }
+            }
         }
-        return null;
+        return ResponseEntity.noContent().build();
     }
 }
