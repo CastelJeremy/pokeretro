@@ -1,21 +1,22 @@
 version: '3.7'
 services:
     database:
-        image: redis
+        image: mongo
         restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongo
+            MONGO_INITDB_ROOT_PASSWORD: mongo
         networks:
             - pokeretro-backend-battle
+    app:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        restart: always
         ports:
-            - 6379:6379
-#     app:
-#         build:
-#             context: ./
-#             dockerfile: ./Dockerfile
-#         restart: always
-#         ports:
-#             - 8085:8080
-#         networks:
-#             - pokeretro-backend-pokemon
-networks: 
-    pokeretro-backend-battle:
+            - 8088:8080
+        networks:
+            - pokeretro-backend-battle
 
+networks:
+    pokeretro-backend-battle:
