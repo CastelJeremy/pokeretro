@@ -3,11 +3,11 @@ package net.pokeretro.battle.entity;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import net.pokeretro.battle.dto.BattleStateDTO;
 
-@RedisHash("BattleState")
+@Document("battlestates")
 public class BattleState {
     private UUID id;
     private Integer turn = 0;
