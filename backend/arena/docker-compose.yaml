@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+    database:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: postgres
+        volumes:
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        ports:
+            - 127.0.0.1:5432:5432
+#        networks:
+#            - pokeretro-backend-auth
+#    app:
+#        build:
+#            context: ./
+#            dockerfile: ./Dockerfile
+#        restart: always
+#        ports:
+#            - 8080:8080
+#        networks:
+#            - pokeretro-backend-auth
+#
+#networks:
+#    pokeretro-backend-auth:
