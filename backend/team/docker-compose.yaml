@@ -11,7 +11,7 @@ services:
             - ./init.js:/docker-entrypoint-initdb.d/init.js:ro
         networks:
             - pokeretro-backend-team
-    app:
+    team-app:
         build:
             context: ./
             dockerfile: ./Dockerfile
@@ -20,6 +20,9 @@ services:
             - 8086:8080
         networks:
             - pokeretro-backend-team
+            - pokeretro-backend
 
 networks:
     pokeretro-backend-team:
+    pokeretro-backend:
+      driver: bridge
