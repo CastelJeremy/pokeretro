@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: './src/index.tsx',
     output: {
         filename: 'main.js',
         path: path.resolve(__dirname, 'dist'),
@@ -10,7 +10,30 @@ module.exports = {
     module: {
         rules: [
             { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
-            { test: /\.css$/i, use: ['style-loader', 'css-loader'] },
+            {
+                test: /\.css$/i,
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            url: true,
+                        },
+                    },
+                ],
+            },
+            {
+                test: /\.png$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[sha512:hash:base64:16].[ext]',
+                            outputPath: 'assets/images/',
+                        },
+                    },
+                ],
+            },
         ],
     },
     resolve: {

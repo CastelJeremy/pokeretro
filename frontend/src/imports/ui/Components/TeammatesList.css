@@ -1,0 +1,45 @@
+.teammatesList {
+    height: 100%;
+    width: 100%;
+}
+
+.teammatesList .container {
+    margin: 12px 12px 0 30px;
+    display: flex;
+}
+
+.teammatesList .selected::before {
+    line-height: 2.8em;
+    content: '>';
+}
+
+.teammatesList .sprite {
+    margin-right: 12px;
+    height: 50px;
+    width: 50px;
+}
+
+.teammatesList .text .title {
+    display: flex;
+}
+
+.teammatesList .text .title .name {
+    margin: 0;
+    width: 250px;
+}
+
+.teammatesList .text .title .level {
+    margin: 0;
+    font-weight: bold;
+}
+
+.teammatesList .text .subtitle {
+    padding-left: 20px;
+    display: flex;
+}
+
+.teammatesList .text .subtitle .health {
+    position: absolute;
+    right: 30px;
+    margin: 0;
+}
