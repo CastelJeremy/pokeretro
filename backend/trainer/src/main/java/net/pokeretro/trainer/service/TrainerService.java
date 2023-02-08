@@ -30,10 +30,10 @@ public class TrainerService {
 
                     // Generate a Pokemon
                     RestTemplate restTemplate = new RestTemplate();
-                    ResponseEntity<PokemonDTO> resPokemon = restTemplate.getForEntity("http://localhost:8085/pokemons/" + starter + "/generate", PokemonDTO.class);
+                    ResponseEntity<PokemonDTO> resPokemon = restTemplate.getForEntity("http://pokemon-app:8080/pokemons/" + starter + "/generate", PokemonDTO.class);
 
                     // Insert Pokemon into team
-                    restTemplate.postForEntity("http://localhost:8086/team/" + trainer.getId(), resPokemon.getBody(), null);
+                    restTemplate.postForEntity("http://team-app:8080/team/" + trainer.getId(), resPokemon.getBody(), null);
 
                     return trainer;
                 }
