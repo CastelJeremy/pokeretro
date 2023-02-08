@@ -3,8 +3,11 @@ package net.pokeretro.trainer.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import net.pokeretro.trainer.dto.PokemonDTO;
 import net.pokeretro.trainer.entity.Trainer;
 import net.pokeretro.trainer.exception.TrainerCreateException;
 import net.pokeretro.trainer.repository.TrainerRepository;
@@ -24,6 +27,13 @@ public class TrainerService {
                         trainer.getName());
                 if (optTrainer.isEmpty()) {
                     trainerRepository.save(trainer);
+
+                    // Generate a Pokemon
+                    RestTemplate restTemplate = new RestTemplate();
+                    ResponseEntity<PokemonDTO> resPokemon = restTemplate.getForEntity("http://localhost:8085/pokemons/" + starter + "/generate", PokemonDTO.class);
+
+                    // Insert Pokemon into team
+                    restTemplate.postForEntity("http://localhost:8086/team/" + trainer.getId(), resPokemon.getBody(), null);
 
                     return trainer;
                 }
