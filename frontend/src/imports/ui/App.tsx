@@ -8,6 +8,7 @@ import ICharacter from '../api/models/ICharacter';
 import IUser from '../api/models/IUser';
 import './App.css';
 import TeamScreen from './Screens/TeamScreen';
+import InventoryScreen from './Screens/InventoryScreen';
 
 const App: React.FC = () => {
     const [user, setUser] = React.useState<IUser>();
@@ -40,6 +41,9 @@ const App: React.FC = () => {
                 />
             </Route>
             <Route path='/'>
+                <InventoryScreen characterId='7d91df4c-ae08-4722-b85e-0b45bec1b639'/>
+            </Route>
+            <Route path='/team'>
                 <TeamScreen characterId='7d91df4c-ae08-4722-b85e-0b45bec1b639' />
             </Route>
         </React.Fragment>

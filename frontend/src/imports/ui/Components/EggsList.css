@@ -1,0 +1,54 @@
+.EggsList {
+    height: 392px;
+    width: 100%;
+
+    overflow-x: scroll;
+
+    position: absolute;
+    top: 0;
+}
+
+.EggsList .container {
+    margin: 12px 12px 0 30px;
+    display: flex;
+}
+
+.EggsList .selected::before {
+    line-height: 2.8em;
+    content: '>';
+}
+
+.EggsList .sprite {
+    margin-right: 12px;
+    height: 50px;
+    width: 50px;
+}
+
+.EggsList .text .title {
+    display: flex;
+}
+
+.EggsList .text .title .name {
+    margin: 0;
+    width: 250px;
+}
+
+.EggsList .text .title .level {
+    margin: 0;
+    font-weight: bold;
+}
+
+.EggsList .text .subtitle {
+    padding-left: 20px;
+    width: 350px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.EggsList .text .subtitle .weight {
+    margin: 0;
+}
+
+.EggsList .text .subtitle .time {
+    margin: 0;
+}

@@ -13,7 +13,6 @@ const TeamScreen: React.FC<ITeamScreenProps> = ({ characterId }) => {
     const [location, setLocation] = useLocation();
     const [teammates, setTeammates] = React.useState<Array<ITeammate>>([]);
     const [selectedTeammate, setSelectedTeammate] = React.useState<ITeammate>();
-    const [disabled, setDisabled] = React.useState<boolean>();
 
     const swap = (teammateOne: ITeammate, teammateTwo: ITeammate) => {
         TeammateService.swap(characterId, teammateOne.id, teammateTwo.id).then(
