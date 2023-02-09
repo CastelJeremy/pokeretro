@@ -1,121 +1,68 @@
 package net.pokeretro.inventory.controller;
 
-import com.google.gson.JsonObject;
 import net.pokeretro.inventory.exception.NotEnoughMoneyException;
 import net.pokeretro.inventory.model.Egg;
-import net.pokeretro.inventory.model.Inventory;
 import net.pokeretro.inventory.model.Money;
 import net.pokeretro.inventory.repository.EggRepository;
-import net.pokeretro.inventory.repository.InventoryRepository;
 import net.pokeretro.inventory.service.InventoryService;
-import net.pokeretro.inventory.utils.JSONUtils;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 public class InventoryController {
-
-    @Autowired
-    private InventoryRepository inventoryRepository;
     @Autowired
     private InventoryService inventoryService;
 
     @Autowired
     private EggRepository eggRepository;
 
-    @GetMapping(value="/money")
-    public String getMoney(@RequestParam UUID idTrainer) {
-        Optional<Inventory> tempInv = inventoryRepository.findById(idTrainer);
-        Inventory inv;
-        // Si l'inventaire n'existe pas, on le crée
-        if(tempInv.isEmpty())
-            inv = inventoryService.createInventory(idTrainer);
-        else
-            inv = tempInv.get();
+    @GetMapping("/money/{trainerId}")
+    public ResponseEntity<Money> getMoney(@PathVariable UUID trainerId) {
+        Money money = inventoryService.getMoney(trainerId);
 
-        return JSONUtils.intToJSON("amount", inv.getMoney()).toString();
+        return ResponseEntity.ok(money);
     }
 
-    @PostMapping(value="/money/deposit")
-    public void addMoney(@RequestParam UUID idTrainer, @RequestBody Money money)
+    @PutMapping("/money/deposit/{trainerId}")
+    public ResponseEntity<Money> addMoney(@PathVariable UUID trainerId, @RequestBody Money money) {
+        return ResponseEntity.ok(inventoryService.addMoney(trainerId, money));
+    }
+
+    @PutMapping("/money/withdraw/{trainerId}")
+    public ResponseEntity<Money> removeMoney(@PathVariable UUID trainerId, @RequestBody Money money)
             throws NotEnoughMoneyException {
-        Optional<Inventory> tempInv = inventoryRepository.findById(idTrainer);
-        Inventory inv;
-        // Si l'inventaire n'existe pas, on le crée
-        if(tempInv.isEmpty())
-            inv = inventoryService.createInventory(idTrainer);
-        else
-            inv = tempInv.get();
-
-        inventoryService.addMoney(inv, money.getAmount());
-        inventoryRepository.save(inv);
+        return ResponseEntity.ok(inventoryService.removeMoney(trainerId, money));
     }
 
-    @PostMapping(value="/money/withdraw")
-    public void removeMoney(@RequestParam UUID idTrainer, @RequestBody Money money)
-            throws NotEnoughMoneyException {
-        Optional<Inventory> tempInv = inventoryRepository.findById(idTrainer);
-        Inventory inv;
-        // Si l'inventaire n'existe pas, on le crée
-        if(tempInv.isEmpty())
-            inv = inventoryService.createInventory(idTrainer);
-        else
-            inv = tempInv.get();
-
-        inventoryService.addMoney(inv, -money.getAmount());
-        inventoryRepository.save(inv);
+    @GetMapping("/egg/{trainerId}")
+    public ResponseEntity<List<Egg>> getEggs(@PathVariable UUID trainerId) {
+        return ResponseEntity.ok(eggRepository.findAllByTrainerId(trainerId));
     }
 
-    @GetMapping(value="/egg")
-    public String getEggs(@RequestParam UUID idTrainer) {
-        Optional<Inventory> tempInv = inventoryRepository.findById(idTrainer);
-        Inventory inv;
-        // Si l'inventaire n'existe pas, on le crée
-        if(tempInv.isEmpty())
-            inv = inventoryService.createInventory(idTrainer);
-        else
-            inv = tempInv.get();
+    @PostMapping("/egg/{trainerId}")
+    public ResponseEntity<List<Egg>> addEgg(@PathVariable UUID trainerId, @RequestBody Egg egg) {
+        inventoryService.addEgg(trainerId, egg);
 
-        Collection<Egg> eggs = inv.getEggs();
-        return JSONUtils.collectionToJSON("eggs", eggs).toString();
+        return ResponseEntity.ok(eggRepository.findAllByTrainerId(trainerId));
     }
 
-    @PostMapping(value="/egg")
-    public void addEgg(@RequestParam UUID idTrainer, @RequestBody Egg egg) {
-        Optional<Inventory> tempInv = inventoryRepository.findById(idTrainer);
-        Inventory inv;
-        // Si l'inventaire n'existe pas, on le crée
-        if(tempInv.isEmpty())
-            inv = inventoryService.createInventory(idTrainer);
-        else
-            inv = tempInv.get();
+    @DeleteMapping("/egg/{trainerId}")
+    public ResponseEntity<List<Egg>> removeEgg(@PathVariable UUID trainerId, @RequestBody Egg egg) {
+        Optional<Egg> optEgg = eggRepository.findByIdAndTrainerId(egg.getId(), trainerId);
 
-        inventoryService.addEgg(inv, egg);
-        inventoryRepository.save(inv);
-    }
+        if (optEgg.isPresent()) {
+            inventoryService.removeEgg(egg);
 
-    @DeleteMapping(value="/egg")
-    public void removeEgg(@RequestParam UUID idTrainer, @RequestBody Egg egg) {
-        Optional<Inventory> tempInv = inventoryRepository.findById(idTrainer);
-        Inventory inv;
-        // Si l'inventaire n'existe pas, on le crée
-        if(tempInv.isEmpty())
-            inv = inventoryService.createInventory(idTrainer);
-        else
-            inv = tempInv.get();
+            return ResponseEntity.ok(eggRepository.findAllByTrainerId(trainerId));
+        }
 
-        inventoryService.removeEgg(inv, egg);
-        inventoryRepository.save(inv);
-    }
-
-    @GetMapping(value = "/report")
-    public String generateReport(@RequestParam UUID idTrainer) {
-        //TODO
-        throw new NotYetImplementedException();
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 }
