@@ -31,27 +31,47 @@ class TeammateService extends RequestHandler {
         teammateOneId: string,
         teammateTwoId: string
     ): Promise<ITeammate[]> {
-        let teammates: ITeammate[] = [];
+        const reqSwap = await this.request('/team/' + characterId + '/swap', {
+            method: 'PUT',
+            body: [
+                {
+                    id: teammateOneId,
+                },
+                {
+                    id: teammateTwoId,
+                },
+            ],
+        });
 
-        const reqTeammates = await this.request(
-            '/team/' + characterId + '/swap',
-            {
-                method: 'PUT',
-                body: [
-                    {
-                        id: teammateOneId,
-                    },
-                    {
-                        id: teammateTwoId,
-                    },
-                ],
+        if (reqSwap.status === 200) {
+            let teammates: ITeammate[] = [];
+
+            const resSwap = await reqSwap.json();
+
+            for (const teammate of resSwap) {
+                teammates.push(teammate);
             }
-        );
 
-        if (reqTeammates.status === 200) {
-            const resTeammates = await reqTeammates.json();
+            return teammates;
+        }
 
-            for (const teammate of resTeammates) {
+        throw new Error();
+    }
+
+    async delete(characterId: string, teammate: ITeammate): Promise<ITeammate[]> {
+        const reqDel = await this.request('/team/' + characterId, {
+            method: 'DELETE',
+            body: {
+                id: teammate.id,
+            },
+        });
+
+        if (reqDel.status === 200) {
+            let teammates: ITeammate[] = [];
+
+            const resDel = await reqDel.json();
+
+            for (const teammate of resDel) {
                 teammates.push(teammate);
             }
 
