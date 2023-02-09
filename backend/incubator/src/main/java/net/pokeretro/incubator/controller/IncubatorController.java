@@ -1,90 +1,49 @@
 package net.pokeretro.incubator.controller;
 
 import net.pokeretro.incubator.exception.NotEnoughPlaceException;
+import net.pokeretro.incubator.exception.NotReadyToHatchException;
 import net.pokeretro.incubator.model.*;
 import net.pokeretro.incubator.respositories.EggRepository;
-import net.pokeretro.incubator.respositories.IncubatorRepository;
+import net.pokeretro.incubator.service.IncubatorService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Instant;
-import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 public class IncubatorController {
-
-    @Autowired
-    private IncubatorRepository incubatorRepository;
     @Autowired
     private EggRepository eggRepository;
 
-    @GetMapping(value = "/incubator")
-    public ResponseEntity<IncubatorDTO> getIncubator(@RequestParam UUID idTrainer) {
-        Optional<Incubator> optionalIncubator = incubatorRepository.findByIdTrainer(idTrainer);
+    @Autowired
+    private IncubatorService incubatorService;
 
-        if(optionalIncubator.isEmpty()) {
-            Incubator newIncubator = new Incubator(idTrainer);
-            incubatorRepository.save(newIncubator);
-            return ResponseEntity.ok(newIncubator.toDTO());
-        } else {
-            return ResponseEntity.ok(optionalIncubator.get().toDTO());
-        }
+    @GetMapping("/incubator/{trainerId}")
+    public ResponseEntity<List<Egg>> getIncubator(@PathVariable UUID trainerId) {
+        return ResponseEntity.ok(eggRepository.findAllByTrainerId(trainerId));
     }
 
-    @GetMapping(value = "/incubator/weight")
-    public Integer getWeight(@RequestParam UUID idTrainer) {
-        Optional<Incubator> optionalIncubator = incubatorRepository.findByIdTrainer(idTrainer);
-        return optionalIncubator.map(Incubator::getWeight).orElse(0);
+    @PostMapping("/incubator/place/{trainerId}")
+    public ResponseEntity<List<Egg>> placeEgg(@PathVariable UUID trainerId, @RequestBody Egg egg)
+            throws NotEnoughPlaceException {
+        return ResponseEntity.ok(incubatorService.place(trainerId, egg));
     }
 
-    @PostMapping(value = "/incubator/place")
-    public void placeEgg(@RequestParam UUID idTrainer, @RequestBody EggDTO egg) throws NotEnoughPlaceException {
-        Optional<Incubator> optionalIncubator = incubatorRepository.findByIdTrainer(idTrainer);
+    @PostMapping("/incubator/hatch/{trainerId}")
+    public ResponseEntity<List<Egg>> hatchEgg(@PathVariable UUID trainerId, @RequestBody Egg egg)
+            throws NotReadyToHatchException {
+        Optional<Egg> optEgg = eggRepository.findByIdAndTrainerId(egg.getId(), trainerId);
 
-        //TODO IF_EMPTY
-        if(optionalIncubator.isPresent()){
-            Incubator incubator = optionalIncubator.get();
-
-            egg.setIncubationStartDate(Date.from(Instant.now()));
-            Egg eggEntity = new Egg(egg, incubator);
-            if(optionalIncubator.get().addEgg(eggEntity)) {
-                //Egg added
-                eggRepository.save(eggEntity);
-                incubatorRepository.save(incubator);
-            } else {
-                //Not enough place (Weight > 3000)
-                throw new NotEnoughPlaceException();
-            }
+        if (optEgg.isPresent()) {
+            return ResponseEntity.ok(incubatorService.hatch(trainerId, optEgg.get()));
         }
-    }
 
-    @PostMapping(value = "/incubator/hatch")
-    public ResponseEntity<PokemonDTO> hatchEgg(@RequestParam UUID idTrainer, @RequestBody Egg egg) throws URISyntaxException {
-        Optional<Incubator> optionalIncubator = incubatorRepository.findByIdTrainer(idTrainer);
-
-        if(optionalIncubator.isPresent()) {
-            Optional<Egg> optionalEggIncubated = optionalIncubator.get()
-                    .getEggs()
-                    .stream()
-                    .filter(egg1 -> egg1.getId().equals(egg.getId()))
-                    .findFirst();
-            if(optionalEggIncubated.isPresent()) {
-                Egg eggIncubated = optionalEggIncubated.get();
-
-                if(eggIncubated.isIncubationFinished()){
-                    RestTemplate restTemplate = new RestTemplate();
-                    return restTemplate.getForEntity(
-                            new URI("http://localhost:8083/pokemons/" + eggIncubated.getIdPokemon() + "/generate"),
-                            PokemonDTO.class);
-                }
-            }
-        }
-        return ResponseEntity.noContent().build();
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 }

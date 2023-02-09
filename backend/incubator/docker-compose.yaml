@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+    database:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: postgres
+        networks:
+            - pokeretro-backend-incubator
+    incubator-app:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        restart: always
+        ports:
+            - 8084:8080
+        networks:
+            - pokeretro-backend-incubator
+            - pokemon_pokeretro-backend
+            - team_pokeretro-backend
+
+networks:
+    pokeretro-backend-incubator:
+    pokemon_pokeretro-backend:
+        external: true
+    team_pokeretro-backend:
+        external: true
