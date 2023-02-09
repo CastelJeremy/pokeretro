@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EggRepository extends JpaRepository<Egg, Integer> {
-    public Optional<Egg> findByIdAndTrainerId(Integer id, UUID trainerId);
+public interface EggRepository extends JpaRepository<Egg, UUID> {
+    public Optional<Egg> findByIdAndTrainerId(UUID id, UUID trainerId);
     public List<Egg> findAllByTrainerId(UUID trainerId);
 }

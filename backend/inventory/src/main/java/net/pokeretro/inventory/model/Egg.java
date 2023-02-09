@@ -7,8 +7,8 @@ import jakarta.persistence.*;
 @Table(name = "eggs")
 public class Egg {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "id_trainer")
     private UUID trainerId;
@@ -25,7 +25,7 @@ public class Egg {
     @Column(name = "id_pokemon", nullable = false)
     private Integer pokemonId;
 
-    public Integer getId() {
+    public UUID getId() {
         return id;
     }
 

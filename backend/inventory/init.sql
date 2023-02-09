@@ -1,5 +1,5 @@
 CREATE TABLE public.eggs (
-    id SERIAL PRIMARY KEY,
+    id uuid PRIMARY KEY,
     id_pokemon INT NOT NULL,
     id_trainer uuid NOT NULL,
     "time" INT NOT NULL,
