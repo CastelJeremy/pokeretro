@@ -1,4 +1,4 @@
-package net.pokeretro.shop.model;
+package net.pokeretro.shop.dto;
 
 public class StatDTO {
     private Integer hp;
@@ -6,6 +6,9 @@ public class StatDTO {
     private Integer defense;
     private Integer speed;
     private Integer special;
+
+    public StatDTO() {
+    }
 
     public StatDTO(Integer hp, Integer attack, Integer defense, Integer speed, Integer special) {
         this.hp = hp;

@@ -1,16 +1,23 @@
 package net.pokeretro.shop.controller;
 
 import com.google.gson.JsonObject;
+
+import net.pokeretro.shop.dto.PokemonDTO;
+import net.pokeretro.shop.exception.BadRequestException;
 import net.pokeretro.shop.exception.CategoryNotFoundException;
 import net.pokeretro.shop.exception.NotEnoughMoneyException;
 import net.pokeretro.shop.model.*;
+import net.pokeretro.shop.repositories.EggRepository;
 import net.pokeretro.shop.repositories.OfferRepository;
 import net.pokeretro.shop.repositories.ShopRepository;
+import net.pokeretro.shop.service.BaseShopService;
 import net.pokeretro.shop.utils.RequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,27 +34,70 @@ public class ShopController {
     @Autowired
     private OfferRepository offerRepository;
 
+    @Autowired
+    private EggRepository eggRepository;
+
+    @Autowired
+    private BaseShopService baseShopService;
+
+    @GetMapping("/shop/base")
+    public ResponseEntity<List<Egg>> getBaseList() {
+        return ResponseEntity.ok(eggRepository.findAllByShopId(1));
+    }
+
+    @PostMapping("/shop/base/buy/{trainerId}")
+    public ResponseEntity<Egg> buyFromBase(@PathVariable UUID trainerId, @RequestBody Egg egg) {
+        Optional<Egg> optEgg = eggRepository.findByIdAndShopId(egg.getId(), 1);
+
+        if (optEgg.isPresent()) {
+            try {
+                return ResponseEntity.ok(baseShopService.buy(trainerId, optEgg.get()));
+            } catch (BadRequestException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/shop/base/sell/{trainerId}")
+    public ResponseEntity<Egg> sellToBase(@PathVariable UUID trainerId, @RequestBody Egg egg) {
+        try {
+            return ResponseEntity.ok(baseShopService.sell(trainerId, egg));
+        } catch (BadRequestException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/shop/base/refresh")
+    public ResponseEntity<List<Egg>> refreshBase() {
+        return ResponseEntity.ok(baseShopService.refresh());
+    }
+
     @CrossOrigin
     @GetMapping(value = "/shop")
     public ResponseEntity<Shop> showShop(@RequestParam String category) throws CategoryNotFoundException {
-        if(category.equals("base")){
+        if (category.equals("base")) {
             Optional<Shop> shop = shopRepository.findById(UUID.fromString("0cdad3af-d414-4013-acf7-0c9c1195e9c3"));
             return shop.map(ResponseEntity::ok).orElse(null);
         } else if (category.equals("community")) {
             Optional<Shop> shop = shopRepository.findById(UUID.fromString("2f250d17-b179-4073-9b28-09d10af6079c"));
             return shop.map(ResponseEntity::ok).orElse(null);
-        } else throw new CategoryNotFoundException();
+        } else
+            throw new CategoryNotFoundException();
     }
 
     @CrossOrigin
     @PostMapping(value = "/shop/buy")
     public void buyEgg(@RequestParam Trainer buyer, @RequestBody Offer offer)
             throws IOException, NotEnoughMoneyException {
-        JsonObject moneyAmountResponse = RequestBuilder.query(new URL("http://localhost:8082/money?idTrainer=" + buyer.getId()), "GET", null);
+        JsonObject moneyAmountResponse = RequestBuilder
+                .query(new URL("http://localhost:8082/money?idTrainer=" + buyer.getId()), "GET", null);
         int money = moneyAmountResponse.get("amount").getAsInt();
 
-        if(money >= offer.getPrice()) {
-            RequestBuilder.query(new URL("http://localhost:8082/money/withdraw?idTrainer=" + buyer.getId()), "POST", null);
+        if (money >= offer.getPrice()) {
+            RequestBuilder.query(new URL("http://localhost:8082/money/withdraw?idTrainer=" + buyer.getId()), "POST",
+                    null);
             RequestBuilder.query(new URL("http://localhost:8082/egg?idTrainer=" + buyer.getId()), "POST", null);
         } else {
             throw new NotEnoughMoneyException();
@@ -91,16 +141,16 @@ public class ShopController {
         PokemonDTO[] eggable = restTemplate.getForObject(uri, PokemonDTO[].class);
         List<Offer> result = new ArrayList<>();
 
-        if(eggable != null) {
+        if (eggable != null) {
             while (result.size() < 6) {
-                PokemonDTO pokemon = eggable[new Random().nextInt(eggable.length-1)];
+                PokemonDTO pokemon = eggable[new Random().nextInt(eggable.length - 1)];
                 int rand = new Random().nextInt(100);
-                result.add(new Offer(new Egg(UUID.randomUUID(), rand, rand/2, pokemon.getId()), pokemon.getRarity()));
+                result.add(new Offer(new Egg(UUID.randomUUID(), rand, rand / 2, pokemon.getId()), pokemon.getRarity()));
             }
         }
 
         Optional<Shop> shopOptional = shopRepository.findById(UUID.fromString("0cdad3af-d414-4013-acf7-0c9c1195e9c3"));
-        if(shopOptional.isPresent()) {
+        if (shopOptional.isPresent()) {
             Shop shop = shopOptional.get();
             shop.setOffers(result);
             shopRepository.save(shop);

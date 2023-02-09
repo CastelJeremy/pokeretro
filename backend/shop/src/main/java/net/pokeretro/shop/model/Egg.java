@@ -9,27 +9,34 @@ import java.util.UUID;
 public class Egg {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
     private UUID id;
-
-    @Column(name = "time")
+    private UUID trainerId;
     private Integer time;
-
-    @Column(name = "weight")
     private Integer weight;
+    private Integer price;
+    private Integer pokemonId;
+    private Integer shopId; // 1 - base, 2 - community, 3 - external
 
-    @Column(name = "id_pokemon")
-    private Integer idPokemon;
+    public Egg() {
+    }
 
-    public Egg(UUID id, Integer time, Integer weight, Integer idPokemon) {
+    public Egg(UUID id, Integer time, Integer weight, Integer pokemonId) {
         this.id = id;
         this.time = time;
         this.weight = weight;
-        this.idPokemon = idPokemon;
+        this.pokemonId = pokemonId;
     }
 
-    public Egg() {
+    public Egg(Integer time, Integer weight, Integer price, Integer pokemonId, Integer shopId) {
+        this.time = time;
+        this.weight = weight;
+        this.price = price;
+        this.pokemonId = pokemonId;
+        this.shopId = shopId;
+    }
 
+    public UUID getTrainerId() {
+        return trainerId;
     }
 
     public UUID getId() {
@@ -44,7 +51,15 @@ public class Egg {
         return weight;
     }
 
-    public Integer getIdPokemon() {
-        return idPokemon;
+    public Integer getPrice() {
+        return price;
+    }
+
+    public Integer getPokemonId() {
+        return pokemonId;
+    }
+
+    public Integer getShopId() {
+        return shopId;
     }
 }

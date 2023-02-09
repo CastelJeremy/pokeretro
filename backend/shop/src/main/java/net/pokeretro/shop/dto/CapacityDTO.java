@@ -1,4 +1,4 @@
-package net.pokeretro.shop.model;
+package net.pokeretro.shop.dto;
 
 public class CapacityDTO {
     private String name;
@@ -9,7 +9,11 @@ public class CapacityDTO {
     private String type;
     private Integer levelLearned;
 
-    public CapacityDTO(String name, String category, Integer power, Integer accuracy, Integer pp, String type, Integer levelLearned) {
+    public CapacityDTO() {
+    }
+
+    public CapacityDTO(String name, String category, Integer power, Integer accuracy, Integer pp, String type,
+            Integer levelLearned) {
         this.name = name;
         this.category = category;
         this.power = power;
