@@ -12,6 +12,7 @@ const MapScreen: React.FC = () => {
             <MenuBar
                 choices={['Arena', 'PokeCenter', 'Inventory', 'Team', 'Shop']}
                 onSubmit={(choice) => {
+                    if (choice === 'Inventory') setLocation('/inventory');
                     if (choice === 'Team') setLocation('/team');
                 }}
             />

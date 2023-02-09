@@ -33,14 +33,14 @@ const App: React.FC = () => {
             <Route path='/map'>
                 <MapScreen />
             </Route>
-            <Route path='/character'>
+            <Route path='/'>
                 <CharacterScreen
                     userId='9b3a947e-9e03-490d-91a3-9a9a67084c8e'
                     character={character}
                     setCharacter={setCharacter}
                 />
             </Route>
-            <Route path='/'>
+            <Route path='/inventory'>
                 <InventoryScreen characterId='7d91df4c-ae08-4722-b85e-0b45bec1b639'/>
             </Route>
             <Route path='/team'>
