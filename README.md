@@ -42,6 +42,13 @@ It also use :
 - Application Deployment --> Docker
 
 ## How to start
+First you need to install Docker and [docker-compose](https://docs.docker.com/compose/install/) on your computer.
+
+### Windows
+Run the run.bat script from the root folder of this repository.
+
+### Linux
+Run WITH SUDO the run.sh script from the root folder of this repository.
 
 ## License
 DBAD Public License
