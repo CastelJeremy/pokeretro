@@ -59,7 +59,8 @@ public class BaseShopService {
         ParameterizedTypeReference<List<Egg>> eggsRes = new ParameterizedTypeReference<List<Egg>>() {
         };
 
-        ResponseEntity<List<Egg>> eggs = restTemplate.exchange("http://inventory-app:8080/egg/" + trainerId, HttpMethod.GET,
+        ResponseEntity<List<Egg>> eggs = restTemplate.exchange("http://inventory-app:8080/egg/" + trainerId,
+                HttpMethod.GET,
                 null, eggsRes);
 
         List<Egg> match = eggs.getBody().stream().filter((e) -> e.getId().equals(egg.getId())).toList();
@@ -94,7 +95,8 @@ public class BaseShopService {
 
         for (int i = 0; i < 6; i++) {
             PokemonDTO pokemon = pokemons.get(rand.nextInt(pokemons.size()));
-            Egg egg = new Egg(rand.nextInt(10, 70), rand.nextInt(30, 400), pokemon.getRarity() * 10, pokemon.getId(), 1);
+            Egg egg = new Egg(rand.nextInt(70) + 10, rand.nextInt(370) + 30, pokemon.getRarity() * 10, pokemon.getId(),
+                    1);
 
             eggRepository.save(egg);
         }
