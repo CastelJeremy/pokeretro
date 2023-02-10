@@ -1,15 +1,31 @@
 version: '3.7'
 
 services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - '5432:5432'
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    database:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: postgres
+        networks:
+            - pokeretro-backend-shop
+    shop-app:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        restart: always
+        ports:
+            - 8083:8080
+        networks:
+            - pokeretro-backend-shop
+            - pokemon_pokeretro-backend
+            - inventory_pokeretro-backend
+
+networks:
+    pokeretro-backend-shop:
+    pokemon_pokeretro-backend:
+        external: true
+    inventory_pokeretro-backend:
+        external: true
 #  rabbitmq:
 #    image: docker.io/bitnami/rabbitmq:3.11
 #    ports:

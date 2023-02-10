@@ -74,6 +74,7 @@ public class ShopController {
         return ResponseEntity.ok(baseShopService.refresh());
     }
 
+    /**
     @CrossOrigin
     @GetMapping(value = "/shop")
     public ResponseEntity<Shop> showShop(@RequestParam String category) throws CategoryNotFoundException {
@@ -155,5 +156,5 @@ public class ShopController {
             shop.setOffers(result);
             shopRepository.save(shop);
         }
-    }
+    }*/
 }
