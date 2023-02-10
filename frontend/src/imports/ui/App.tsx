@@ -10,6 +10,7 @@ import './App.css';
 import TeamScreen from './Screens/TeamScreen';
 import InventoryScreen from './Screens/InventoryScreen';
 import WelcomeScreen from './Screens/WelcomeScreen';
+import IncubatorScreen from './Screens/IncubatorScreen';
 
 const App: React.FC = () => {
     const [user, setUser] = React.useState<IUser>();
@@ -38,6 +39,9 @@ const App: React.FC = () => {
             </Route>
             <Route path='/inventory'>
                 <InventoryScreen characterId={character ? character.id : ''} />
+            </Route>
+            <Route path='/incubator'>
+                <IncubatorScreen characterId={character ? character.id : ''} />
             </Route>
             <Route path='/team'>
                 <TeamScreen characterId={character ? character.id : ''} />

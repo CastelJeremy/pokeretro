@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { useLocation } from 'wouter';
-import EggService from '../../api/EggService';
 import IncubatorService from '../../api/IncubatorService';
 import IEgg from '../../api/models/IEgg';
-import MoneyService from '../../api/MoneyService';
-import EggsList from '../Components/EggsList';
+import IncubationList from '../Components/IncubationList';
 import MenuBar from '../Components/MenuBar';
 import TextBar from '../Components/TextBar';
 
@@ -12,41 +10,23 @@ interface IProps {
     characterId: string;
 }
 
-const InventoryScreen: React.FC<IProps> = ({ characterId }) => {
+const IncubatorScreen: React.FC<IProps> = ({ characterId }) => {
     const [location, setLocation] = useLocation();
     const [eggs, setEggs] = React.useState<IEgg[]>([]);
-    const [money, setMoney] = React.useState<number>(0);
     const [selectedEgg, setSelectedEgg] = React.useState<IEgg>();
 
-    const reload = () => {
-        EggService.getAllByCharacterId(characterId).then((eggs) =>
-            setEggs(eggs)
-        );
-
-        MoneyService.get(characterId).then((amount) => setMoney(amount));
-    };
-
     const handleAction = (action: string) => {
-        if (action === 'Break') {
-            EggService.delete(characterId, selectedEgg).then(() => {
-                reload();
+        if (action == 'Hatch') {
+            IncubatorService.hatch(characterId, selectedEgg).then((eggs) => {
+                setEggs(eggs);
                 setSelectedEgg(null);
-            });
-        }
-
-        if (action === 'Incubate') {
-            IncubatorService.place(characterId, selectedEgg).then(() => {
-                EggService.delete(characterId, selectedEgg).then(() => {
-                    reload();
-                    setSelectedEgg(null);
-                });
             });
         }
     };
 
     React.useEffect(() => {
         if (characterId) {
-            reload();
+            IncubatorService.getAllByCharacterId(characterId).then(setEggs);
         }
     }, [characterId]);
 
@@ -66,12 +46,10 @@ const InventoryScreen: React.FC<IProps> = ({ characterId }) => {
 
     return (
         <React.Fragment>
-            <EggsList
+            <IncubationList
                 eggs={eggs}
                 disabled={!!selectedEgg}
-                onSubmit={(egg) => {
-                    setSelectedEgg(egg);
-                }}
+                onSubmit={setSelectedEgg}
             />
             <TextBar
                 content={
@@ -79,20 +57,14 @@ const InventoryScreen: React.FC<IProps> = ({ characterId }) => {
                         ? 'What to do with ' + selectedEgg.pokemon.name + ' ?'
                         : eggs.length > 0
                         ? 'Choose an egg.'
-                        : 'Empty inventory.'
+                        : 'Empty incubator.'
                 }
             />
             {selectedEgg && (
-                <MenuBar
-                    choices={['Sell', 'Incubate', 'Break']}
-                    onSubmit={handleAction}
-                />
+                <MenuBar choices={['Hatch']} onSubmit={handleAction} />
             )}
-            <p style={{ position: 'absolute', bottom: 0, left: '18px' }}>
-                Money: {money} $
-            </p>
         </React.Fragment>
     );
 };
 
-export default InventoryScreen;
+export default IncubatorScreen;

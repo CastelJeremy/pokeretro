@@ -1,7 +1,7 @@
 import * as React from 'react';
 import IEgg from '../../api/models/IEgg';
 
-import './EggsList.css';
+import './IncubationList.css';
 
 interface IProps {
     eggs: IEgg[];
@@ -9,7 +9,7 @@ interface IProps {
     onSubmit: (egg: IEgg) => void;
 }
 
-const EggsList: React.FC<IProps> = ({ eggs, disabled, onSubmit }) => {
+const IncubationList: React.FC<IProps> = ({ eggs, disabled, onSubmit }) => {
     const [length, _setLength] = React.useState<number>(eggs.length);
     const [selected, _setSelected] = React.useState<number>(0);
     const [pressEnter, _setPressEnter] = React.useState<boolean>(false);
@@ -74,7 +74,7 @@ const EggsList: React.FC<IProps> = ({ eggs, disabled, onSubmit }) => {
     };
 
     return (
-        <div className='EggsList'>
+        <div className='IncubationList'>
             {eggs.sort(sortEggs).map((egg, key) => {
                 return (
                     <div
@@ -93,8 +93,20 @@ const EggsList: React.FC<IProps> = ({ eggs, disabled, onSubmit }) => {
                             </div>
                             <div className='subtitle'>
                                 <p className='weight'>{egg.weight} g</p>
-                                <p className='price'>{egg.price} $</p>
-                                <p className='time'>{egg.time} sec.</p>
+                                <p className='price'>
+                                    {egg.finished
+                                        ? '0'
+                                        : Math.floor(
+                                              (egg.startTime +
+                                                  egg.time * 1000 -
+                                                  Date.now()) /
+                                                  1000
+                                          )}{' '}
+                                    sec.
+                                </p>
+                                <p className='time'>
+                                    {egg.finished ? 'Ready' : ''}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -104,4 +116,4 @@ const EggsList: React.FC<IProps> = ({ eggs, disabled, onSubmit }) => {
     );
 };
 
-export default EggsList;
+export default IncubationList;

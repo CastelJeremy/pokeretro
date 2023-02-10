@@ -10,9 +10,10 @@ const MapScreen: React.FC = () => {
         <React.Fragment>
             <TextBar content='Where do you want to go ?' />
             <MenuBar
-                choices={['Arena', 'PokeCenter', 'Inventory', 'Team', 'Shop']}
+                choices={['Arena', 'PokeCenter', 'Inventory', 'Incubator', 'Team', 'Shop']}
                 onSubmit={(choice) => {
                     if (choice === 'Inventory') setLocation('/inventory');
+                    if (choice === 'Incubator') setLocation('/incubator');
                     if (choice === 'Team') setLocation('/team');
                 }}
             />

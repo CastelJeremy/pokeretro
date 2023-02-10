@@ -10,19 +10,22 @@ class EggService extends RequestHandler {
     async getAllByCharacterId(characterId: string): Promise<IEgg[]> {
         let eggs: IEgg[] = [];
 
-        const reqEggs = await this.request('/egg?idTrainer=' + characterId, {
+        const reqEggs = await this.request('/egg/' + characterId, {
             method: 'GET',
         });
 
         if (reqEggs.status === 200) {
             const resEggs = await reqEggs.json();
 
-            for (const egg of resEggs.eggs) {
+            for (const egg of resEggs) {
                 eggs.push({
                     id: egg.id,
                     time: egg.time,
                     weight: egg.weight,
-                    pokemon: await PokemonService.get(egg.idPokemon),
+                    price: egg.price,
+                    startTime: null,
+                    finished: null,
+                    pokemon: await PokemonService.get(egg.pokemonId),
                 });
             }
 
@@ -33,7 +36,7 @@ class EggService extends RequestHandler {
     }
 
     async delete(characterId: string, egg: IEgg): Promise<boolean> {
-        const reqDel = await this.request('/egg?idTrainer=' + characterId, {
+        const reqDel = await this.request('/egg/' + characterId, {
             method: 'DELETE',
             body: {
                 id: egg.id,

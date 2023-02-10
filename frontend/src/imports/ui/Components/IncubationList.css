@@ -1,4 +1,4 @@
-.EggsList {
+.IncubationList {
     height: 392px;
     width: 100%;
 
@@ -8,56 +8,56 @@
     top: 0;
 }
 
-.EggsList .container {
+.IncubationList .container {
     margin: 12px 12px 0 30px;
     display: flex;
 }
 
-.EggsList .selected::before {
+.IncubationList .selected::before {
     line-height: 2.8em;
     content: '>';
 }
 
-.EggsList .sprite {
+.IncubationList .sprite {
     margin-right: 12px;
     height: 50px;
     width: 50px;
 }
 
-.EggsList .text .title {
+.IncubationList .text .title {
     display: flex;
 }
 
-.EggsList .text .title .name {
+.IncubationList .text .title .name {
     margin: 0;
     width: 250px;
 }
 
-.EggsList .text .title .level {
+.IncubationList .text .title .level {
     margin: 0;
     font-weight: bold;
 }
 
-.EggsList .text .subtitle {
+.IncubationList .text .subtitle {
     padding-left: 20px;
     display: flex;
     justify-content: space-between;
 }
 
-.EggsList .text .subtitle .weight {
+.IncubationList .text .subtitle .weight {
     margin: 0;
     width: 80px;
     text-align: right;
 }
 
-.EggsList .text .subtitle .price {
+.IncubationList .text .subtitle .price {
     margin: 0;
-    width: 120px;
+    width: 140px;
     text-align: right;
 }
 
-.EggsList .text .subtitle .time {
+.IncubationList .text .subtitle .time {
     margin: 0;
-    width: 160px;
+    width: 110px;
     text-align: right;
 }

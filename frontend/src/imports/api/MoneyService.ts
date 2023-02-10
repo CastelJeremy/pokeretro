@@ -6,7 +6,7 @@ class MoneyService extends RequestHandler {
     }
 
     async get(characterId: string): Promise<number> {
-        const reqMoney = await this.request('/money?idTrainer=' + characterId, {
+        const reqMoney = await this.request('/money/' + characterId, {
             method: 'GET'
         });
 
