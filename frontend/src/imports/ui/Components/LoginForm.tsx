@@ -24,6 +24,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({ onSubmit }) => {
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
                 placeholder='USERNAME'
+                autoFocus
                 type='text'
             />
             <input

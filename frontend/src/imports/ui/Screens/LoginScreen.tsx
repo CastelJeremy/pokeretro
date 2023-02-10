@@ -4,12 +4,26 @@ import LoginForm from '../Components/LoginForm';
 import IUser from '../../api/models/IUser';
 import UserService from '../../api/UserService';
 
-interface ILoginScreenProps {
+interface IProps {
     onLogin: (user: IUser) => void;
 }
 
-const LoginScreen: React.FC<ILoginScreenProps> = ({ onLogin }) => {
+const LoginScreen: React.FC<IProps> = ({ onLogin }) => {
     const [location, setLocation] = useLocation();
+
+    const handleKeyboardEvent = (ev: KeyboardEvent) => {
+        if (ev.key == 'Escape') {
+            setLocation('/');
+        }
+    };
+
+    React.useEffect(() => {
+        window.addEventListener('keydown', handleKeyboardEvent);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyboardEvent);
+        };
+    }, []);
 
     const handleLogin = async (username: string, password: string) => {
         try {

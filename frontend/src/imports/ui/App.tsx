@@ -9,6 +9,7 @@ import IUser from '../api/models/IUser';
 import './App.css';
 import TeamScreen from './Screens/TeamScreen';
 import InventoryScreen from './Screens/InventoryScreen';
+import WelcomeScreen from './Screens/WelcomeScreen';
 
 const App: React.FC = () => {
     const [user, setUser] = React.useState<IUser>();
@@ -16,13 +17,8 @@ const App: React.FC = () => {
 
     return (
         <React.Fragment>
-            <Route path='/fds'>
-                <Link href='/login'>
-                    <a>LOGIN</a>
-                </Link>
-                <Link href='/register'>
-                    <a>REGISTER</a>
-                </Link>
+            <Route path='/'>
+                <WelcomeScreen />
             </Route>
             <Route path='/login'>
                 <LoginScreen onLogin={setUser} />
@@ -33,18 +29,18 @@ const App: React.FC = () => {
             <Route path='/map'>
                 <MapScreen />
             </Route>
-            <Route path='/'>
+            <Route path='/character'>
                 <CharacterScreen
-                    userId='9b3a947e-9e03-490d-91a3-9a9a67084c8e'
+                    userId={user ? user.id : ''}
                     character={character}
                     setCharacter={setCharacter}
                 />
             </Route>
             <Route path='/inventory'>
-                <InventoryScreen characterId='7d91df4c-ae08-4722-b85e-0b45bec1b639'/>
+                <InventoryScreen characterId={character ? character.id : ''} />
             </Route>
             <Route path='/team'>
-                <TeamScreen characterId='7d91df4c-ae08-4722-b85e-0b45bec1b639' />
+                <TeamScreen characterId={character ? character.id : ''} />
             </Route>
         </React.Fragment>
     );
