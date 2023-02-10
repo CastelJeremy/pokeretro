@@ -23,7 +23,13 @@ const TeamScreen: React.FC<ITeamScreenProps> = ({ characterId }) => {
         }
 
         if (action === 'Release') {
-            TeammateService.delete(characterId, selectedTeammate).then(setTeammates);
+            TeammateService.delete(characterId, selectedTeammate).then(
+                setTeammates
+            );
+            setSelectedTeammate(null);
+        }
+
+        if (action === 'Cancel') {
             setSelectedTeammate(null);
         }
     };
@@ -36,7 +42,11 @@ const TeamScreen: React.FC<ITeamScreenProps> = ({ characterId }) => {
 
     React.useEffect(() => {
         if (swapTeammate && selectedTeammate) {
-            TeammateService.swap(characterId, swapTeammate.id, selectedTeammate.id).then(setTeammates);
+            TeammateService.swap(
+                characterId,
+                swapTeammate.id,
+                selectedTeammate.id
+            ).then(setTeammates);
             setSwapTeammate(null);
             setSelectedTeammate(null);
         }
@@ -70,13 +80,13 @@ const TeamScreen: React.FC<ITeamScreenProps> = ({ characterId }) => {
             <TextBar
                 content={
                     swapTeammate
-                        ? 'Swap ' + swapTeammate.name + ' with...'
+                        ? `Swap ${swapTeammate.name} with...`
                         : 'Choose a POKÉMON.'
                 }
             />
             {selectedTeammate && (
                 <MenuBar
-                    choices={['Stats', 'Swap', 'Release']}
+                    choices={['Stats', 'Swap', 'Release', 'Cancel']}
                     onSubmit={handleAction}
                 />
             )}

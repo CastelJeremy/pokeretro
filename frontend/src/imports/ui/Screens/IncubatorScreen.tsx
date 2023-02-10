@@ -16,11 +16,15 @@ const IncubatorScreen: React.FC<IProps> = ({ characterId }) => {
     const [selectedEgg, setSelectedEgg] = React.useState<IEgg>();
 
     const handleAction = (action: string) => {
-        if (action == 'Hatch') {
+        if (action === 'Yes') {
             IncubatorService.hatch(characterId, selectedEgg).then((eggs) => {
                 setEggs(eggs);
                 setSelectedEgg(null);
             });
+        }
+
+        if (action === 'No') {
+            setSelectedEgg(null);
         }
     };
 
@@ -54,15 +58,22 @@ const IncubatorScreen: React.FC<IProps> = ({ characterId }) => {
             <TextBar
                 content={
                     selectedEgg
-                        ? 'What to do with ' + selectedEgg.pokemon.name + ' ?'
+                        ? `Hatch ${selectedEgg.pokemon.name} ?`
                         : eggs.length > 0
                         ? 'Choose an egg.'
                         : 'Empty incubator.'
                 }
             />
             {selectedEgg && (
-                <MenuBar choices={['Hatch']} onSubmit={handleAction} />
+                <MenuBar
+                    choices={['Yes', 'No']}
+                    onSubmit={handleAction}
+                />
             )}
+            <p style={{ position: 'absolute', bottom: 0, left: '18px' }}>
+                Weight:{' '}
+                {eggs.map((a) => a.weight).reduce((a, b) => a + b, 0) / 1000} Kg
+            </p>
         </React.Fragment>
     );
 };

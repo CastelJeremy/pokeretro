@@ -32,20 +32,6 @@ const InventoryScreen: React.FC<IProps> = ({ characterId }) => {
     };
 
     const handleAction = (action: string) => {
-        if (action === 'Sell') {
-            ShopService.sell(characterId, selectedEgg).then(() => {
-                reload();
-                setSelectedEgg(null);
-            });
-        }
-
-        if (action === 'Break') {
-            EggService.delete(characterId, selectedEgg).then(() => {
-                reload();
-                setSelectedEgg(null);
-            });
-        }
-
         if (action === 'Incubate') {
             IncubatorService.place(characterId, selectedEgg).then(() => {
                 EggService.delete(characterId, selectedEgg).then(() => {
@@ -53,6 +39,24 @@ const InventoryScreen: React.FC<IProps> = ({ characterId }) => {
                     setSelectedEgg(null);
                 });
             });
+        }
+
+        if (action === 'Sell') {
+            ShopService.sell(characterId, selectedEgg).then(() => {
+                reload();
+                setSelectedEgg(null);
+            });
+        }
+
+        if (action === 'Set free' || action === 'Omelette ?') {
+            EggService.delete(characterId, selectedEgg).then(() => {
+                reload();
+                setSelectedEgg(null);
+            });
+        }
+
+        if (action === 'Cancel') {
+            setSelectedEgg(null);
         }
     };
 
@@ -96,7 +100,12 @@ const InventoryScreen: React.FC<IProps> = ({ characterId }) => {
             />
             {selectedEgg && (
                 <MenuBar
-                    choices={['Sell', 'Incubate', 'Break']}
+                    choices={[
+                        'Incubate',
+                        'Sell',
+                        Math.random() > 0.99 ? 'Omelette ?' : 'Set free',
+                        'Cancel',
+                    ]}
                     onSubmit={handleAction}
                 />
             )}
