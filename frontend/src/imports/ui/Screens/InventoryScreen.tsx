@@ -4,6 +4,7 @@ import EggService from '../../api/EggService';
 import IncubatorService from '../../api/IncubatorService';
 import IEgg from '../../api/models/IEgg';
 import MoneyService from '../../api/MoneyService';
+import ShopService from '../../api/ShopService';
 import EggsList from '../Components/EggsList';
 import MenuBar from '../Components/MenuBar';
 import TextBar from '../Components/TextBar';
@@ -20,13 +21,24 @@ const InventoryScreen: React.FC<IProps> = ({ characterId }) => {
 
     const reload = () => {
         EggService.getAllByCharacterId(characterId).then((eggs) =>
-            setEggs(eggs)
+            setEggs(
+                eggs.sort((a, b) => {
+                    return a.pokemon.id - b.pokemon.id;
+                })
+            )
         );
 
         MoneyService.get(characterId).then((amount) => setMoney(amount));
     };
 
     const handleAction = (action: string) => {
+        if (action === 'Sell') {
+            ShopService.sell(characterId, selectedEgg).then(() => {
+                reload();
+                setSelectedEgg(null);
+            });
+        }
+
         if (action === 'Break') {
             EggService.delete(characterId, selectedEgg).then(() => {
                 reload();

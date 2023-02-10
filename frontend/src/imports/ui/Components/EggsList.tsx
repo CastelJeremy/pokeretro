@@ -69,13 +69,9 @@ const EggsList: React.FC<IProps> = ({ eggs, disabled, onSubmit }) => {
         }
     }, [eggs]);
 
-    const sortEggs = (eggA: IEgg, eggB: IEgg) => {
-        return eggA.pokemon.id - eggB.pokemon.id;
-    };
-
     return (
         <div className='EggsList'>
-            {eggs.sort(sortEggs).map((egg, key) => {
+            {eggs.map((egg, key) => {
                 return (
                     <div
                         key={key}
