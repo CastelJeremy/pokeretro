@@ -94,7 +94,7 @@ public class BaseShopService {
 
         for (int i = 0; i < 6; i++) {
             PokemonDTO pokemon = pokemons.get(rand.nextInt(pokemons.size()));
-            Egg egg = new Egg(rand.nextInt(100), rand.nextInt(200), pokemon.getRarity() * 10, pokemon.getId(), 1);
+            Egg egg = new Egg(rand.nextInt(10, 70), rand.nextInt(30, 400), pokemon.getRarity() * 10, pokemon.getId(), 1);
 
             eggRepository.save(egg);
         }
