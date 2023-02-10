@@ -27,7 +27,7 @@ public class TeammateService {
         List<Teammate> teammates = teammateRepository.findAllByTrainerUuid(trainerUuid);
         Integer position = teammates.size() + 1;
 
-        if (position > 7) {
+        if (position > 6) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
