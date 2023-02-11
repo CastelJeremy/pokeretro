@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ITeammate from '../../api/models/ITeammate';
 import HealthBar from './HealthBar';
+import Sprite from './Sprite';
 
 import './TeammatesList.css';
 
@@ -80,7 +81,7 @@ const TeammatesList: React.FC<IProps> = ({ teammates, disabled, onSubmit }) => {
                             key == selected ? 'container selected' : 'container'
                         }
                     >
-                        <img className='sprite' />
+                        <Sprite className='sprite' pokemonId={teammate.pokemon.id} animate={key == selected} />
                         <div className='text'>
                             <div className='title'>
                                 <p className='name'>

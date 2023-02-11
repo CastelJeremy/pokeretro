@@ -1,3 +1,5 @@
+import IPokemon from "./IPokemon";
+
 interface IStat {
     attack: number;
     defense: number;
@@ -14,6 +16,7 @@ interface ITeammate {
     baseState: IStat;
     stat: IStat;
     currentStat: IStat;
+    pokemon: IPokemon;
 }
 
 export default ITeammate;

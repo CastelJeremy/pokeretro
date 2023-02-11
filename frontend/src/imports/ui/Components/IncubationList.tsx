@@ -2,6 +2,7 @@ import * as React from 'react';
 import IEgg from '../../api/models/IEgg';
 
 import './IncubationList.css';
+import Sprite from './Sprite';
 
 interface IProps {
     eggs: IEgg[];
@@ -83,7 +84,7 @@ const IncubationList: React.FC<IProps> = ({ eggs, disabled, onSubmit }) => {
                             key == selected ? 'container selected' : 'container'
                         }
                     >
-                        <img className='sprite' />
+                        <Sprite className='sprite' pokemonId={egg.pokemon.id} animate={key == selected} />
                         <div className='text'>
                             <div className='title'>
                                 <p className='name'>
