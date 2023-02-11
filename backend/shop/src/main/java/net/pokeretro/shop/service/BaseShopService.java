@@ -59,25 +59,14 @@ public class BaseShopService {
         ParameterizedTypeReference<List<Egg>> eggsRes = new ParameterizedTypeReference<List<Egg>>() {
         };
 
-        ResponseEntity<List<Egg>> eggs = restTemplate.exchange("http://inventory-app:8080/egg/" + trainerId,
-                HttpMethod.GET,
-                null, eggsRes);
-
-        List<Egg> match = eggs.getBody().stream().filter((e) -> e.getId().equals(egg.getId())).toList();
-
-        if (match.size() == 0)
-            throw new BadRequestException();
-
-        Integer price = match.get(0).getPrice();
-
         HttpEntity<Egg> delEgg = new HttpEntity<Egg>(egg);
         restTemplate.exchange("http://inventory-app:8080/egg/" + trainerId, HttpMethod.DELETE, delEgg, eggsRes);
 
-        HttpEntity<MoneyDTO> req = new HttpEntity<>(new MoneyDTO(price));
+        HttpEntity<MoneyDTO> req = new HttpEntity<>(new MoneyDTO(egg.getPrice()));
         restTemplate.exchange("http://inventory-app:8080/money/deposit/" + trainerId,
                 HttpMethod.PUT, req, MoneyDTO.class);
 
-        return match.get(0);
+        return egg;
     }
 
     @Transactional
