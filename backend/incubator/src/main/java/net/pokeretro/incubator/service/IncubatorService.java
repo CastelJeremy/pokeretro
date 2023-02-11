@@ -25,11 +25,15 @@ public class IncubatorService {
     public List<Egg> place(UUID trainerId, Egg egg) throws NotEnoughPlaceException {
         List<Egg> eggs = eggRepository.findAllByTrainerId(trainerId);
 
+        // Sum total weight of incubators
         Integer weight = eggs.stream().mapToInt(e -> e.getWeight()).sum();
 
-        if (weight + egg.getWeight() > 3000)
+        // Check it does not exceed 3Kg
+        if (weight + egg.getWeight() > 3000) {
             throw new NotEnoughPlaceException();
+        }
 
+        // Update egg informations and put it in the incubator
         egg.setIncubationStartDate(Date.from(Instant.now()));
         egg.setTrainerId(trainerId);
         eggRepository.save(egg);
@@ -41,13 +45,15 @@ public class IncubatorService {
         if (egg.isIncubationFinished()) {
             RestTemplate restTemplate = new RestTemplate();
 
-            // Generate pokemon
-            ResponseEntity<PokemonDTO> pokemon = restTemplate.getForEntity("http://pokemon-app:8080/pokemons/" + egg.getPokemonId() + "/generate", PokemonDTO.class);
+            // Generate a pokemon
+            ResponseEntity<PokemonDTO> pokemon = restTemplate.getForEntity(
+                    "http://pokemon-app:8080/pokemons/" + egg.getPokemonId() + "/generate", PokemonDTO.class);
 
             // Send pokemon to team
             HttpEntity<PokemonDTO> requesEntity = new HttpEntity<PokemonDTO>(pokemon.getBody());
             restTemplate.postForEntity("http://team-app:8080/team/" + trainerId, requesEntity, null);
 
+            // Remove the egg from the incubator
             eggRepository.delete(egg);
 
             return eggRepository.findAllByTrainerId(trainerId);
