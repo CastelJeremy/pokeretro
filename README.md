@@ -6,7 +6,9 @@
 2. [Authors](#authors)
 3. [Technologies used](#technologies-used)
 4. [How to start](#how-to-start)
-5. [License](#license)
+5. [Micro-Services Map](#micro-services-map)
+6. [Critical Transactions](#critical-transactions)
+7. [License](#license)
 
 ## What is this repo ?
 
@@ -74,10 +76,43 @@ Simple dependency map showing which micro-services must be powered on first as w
        └ inventory
 8084: incubator
        ├ pokemon
+       ├ inventory
        └ team
 8085: pokemon
 8086: team
 ```
+
+## Critical Transactions
+
+A list of the critical transactions transactions some Micro-Services handle. This explains the Micro-Services dependency map.
+
+## BaseShop: refresh
+
+- Get list of eggables from pokemon
+
+### BaseShop: sell
+
+- Remove egg from inventory
+- Deposit money to inventory
+
+### BaseShop: buy
+
+- Withdraw money from inventory
+- Send egg to inventory
+
+### Trainer: create
+
+- Generate starter from pokemon
+- Send starter to team
+
+### Incubator: place
+
+- Remove egg from inventory
+
+### Incubator: hatch
+
+- Generate pokemon from pokemon
+- Send pokemon to team
 
 ## License
 
