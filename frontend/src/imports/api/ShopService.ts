@@ -55,6 +55,7 @@ class ShopService extends RequestHandler {
             method: 'POST',
             body: {
                 id: egg.id,
+                price: egg.price,
             },
         });
 
