@@ -34,10 +34,8 @@ const InventoryScreen: React.FC<IProps> = ({ characterId }) => {
     const handleAction = (action: string) => {
         if (action === 'Incubate') {
             IncubatorService.place(characterId, selectedEgg).then(() => {
-                EggService.delete(characterId, selectedEgg).then(() => {
-                    reload();
-                    setSelectedEgg(null);
-                });
+                reload();
+                setSelectedEgg(null);
             });
         }
 
