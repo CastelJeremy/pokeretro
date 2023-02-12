@@ -15,8 +15,6 @@ const MapScreen: React.FC = () => {
                     'Inventory',
                     'Incubator',
                     'Team',
-                    'Arena',
-                    'PokeCenter',
                 ]}
                 onSubmit={(choice) => {
                     if (choice === 'Shop') setLocation('/shop');
