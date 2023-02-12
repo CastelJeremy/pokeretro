@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+    database:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: postgres
+        networks:
+            - pokeretro-backend-shop
+    shop-app:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        restart: always
+        ports:
+            - 8083:8080
+        networks:
+            - pokeretro-backend-shop
+            - pokemon_pokeretro-backend
+            - inventory_pokeretro-backend
+
+networks:
+    pokeretro-backend-shop:
+    pokemon_pokeretro-backend:
+        external: true
+    inventory_pokeretro-backend:
+        external: true
+#  rabbitmq:
+#    image: docker.io/bitnami/rabbitmq:3.11
+#    ports:
+#      - '4369:4369'
+#      - '5551:5551'
+#      - '5552:5552'
+#      - '5672:5672'
+#      - '25672:25672'
+#      - '15672:15672'
+#    environment:
+#      - RABBITMQ_SECURE_PASSWORD=yes
+#      - RABBITMQ_LOGS=-
+#    volumes:
+#      - 'rabbitmq_data:/bitnami/rabbitmq/mnesia'
+#volumes:
+#  rabbitmq_data:
+#    driver: local
