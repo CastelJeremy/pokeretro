@@ -18,11 +18,14 @@ services:
             - 8081:8080
         networks:
             - pokeretro-backend-trainer
+            - pokeretro-backend
             - pokemon_pokeretro-backend
             - team_pokeretro-backend
 
 networks:
     pokeretro-backend-trainer:
+    pokeretro-backend:
+        driver: bridge
     pokemon_pokeretro-backend:
         external: true
     team_pokeretro-backend:

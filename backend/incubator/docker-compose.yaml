@@ -16,12 +16,15 @@ services:
             - 8084:8080
         networks:
             - pokeretro-backend-incubator
+            - pokeretro-backend
             - pokemon_pokeretro-backend
             - inventory_pokeretro-backend
             - team_pokeretro-backend
 
 networks:
     pokeretro-backend-incubator:
+    pokeretro-backend:
+        driver: bridge
     pokemon_pokeretro-backend:
         external: true
     inventory_pokeretro-backend:

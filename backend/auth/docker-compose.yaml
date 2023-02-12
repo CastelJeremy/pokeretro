@@ -18,6 +18,9 @@ services:
             - 8080:8080
         networks:
             - pokeretro-backend-auth
+            - pokeretro-backend
 
 networks:
     pokeretro-backend-auth:
+    pokeretro-backend:
+        driver: bridge
