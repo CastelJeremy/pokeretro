@@ -6,9 +6,10 @@
 2. [Authors](#authors)
 3. [Technologies used](#technologies-used)
 4. [How to start](#how-to-start)
-5. [Micro-Services Map](#micro-services-map)
-6. [Critical Transactions](#critical-transactions)
-7. [License](#license)
+5. [How to play](#how-to-play)
+6. [Micro-Services Map](#micro-services-map)
+7. [Critical Transactions](#critical-transactions)
+8. [License](#license)
 
 ## What is this repo ?
 
@@ -51,15 +52,35 @@ It also uses other techologies:
 
 ## How to start
 
-First you need to install Docker and [docker-compose](https://docs.docker.com/compose/install/) on your computer.
+### Requirements
 
-### Windows
+This project uses docker and docker-compose. Both of them must be installed.
 
-Run the run.bat script from the root folder of this repository.
+### Installations
+
+Download the images we built for you and load them into your docker with the following command:
+
+```bash
+docker image load < auth_app.tar
+docker image load < frontend_frontend-app.tar
+docker image load < incubator_incubator-app.tar
+docker image load < inventory_inventory-app.tar
+docker image load < pokemon_pokemon-app.tar
+docker image load < shop_shop-app.tar
+docker image load < team_team-app.tar
+docker image load < trainer_app.tar
+```
 
 ### Linux
 
-Run WITH SUDO the run.sh script from the root folder of this repository.
+Give the correct permissions to the script and start it.
+
+```bash
+chmod u+x start.sh
+chmod u+x stop.sh
+
+./start.sh
+```
 
 ## Micro-Services Map
 
@@ -103,7 +124,7 @@ A list of the critical transactions transactions some Micro-Services handle. Thi
 ### Trainer: create
 
 - Generate starter from pokemon
-- Send starter to team
+- Send starter to team (Rabbit)
 
 ### Incubator: place
 
@@ -112,7 +133,7 @@ A list of the critical transactions transactions some Micro-Services handle. Thi
 ### Incubator: hatch
 
 - Generate pokemon from pokemon
-- Send pokemon to team
+- Send pokemon to team (Rabbit)
 
 ## License
 
