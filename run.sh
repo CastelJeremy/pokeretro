@@ -1,19 +1,19 @@
 echo "Starting PokeRetro services..."
 
-echo "Launching Arena Service..."
-docker-compose -f backend/arena/docker-compose.yaml up > backend/arena/logs
+#echo "Launching Arena Service..."
+#docker-compose -f backend/arena/docker-compose.yaml up > backend/arena/logs
 echo "Launching Authentification Service..."
 docker-compose -f backend/auth/docker-compose.yaml up > backend/auth/logs
-echo "Launching Fight Service..."
-docker-compose -f backend/fight/docker-compose.yaml up > backend/fight/logs
-echo "Launching Incubator Service..."
-docker-compose -f backend/incubator/docker-compose.yaml up > backend/incubator/logs
+# echo "Launching Fight Service..."
+# docker-compose -f backend/fight/docker-compose.yaml up > backend/fight/logs
 echo "Launching Inventory Service..."
 docker-compose -f backend/inventory/docker-compose.yaml up > backend/inventory/logs
 echo "Launching Pokemon Service..."
 docker-compose -f backend/pokemon/docker-compose.yaml up > backend/pokemon/logs
 #echo "Launching Report Service..."
 #docker-compose -f backend/report/docker-compose.yaml up > backend/report/logs
+echo "Launching Incubator Service..."
+docker-compose -f backend/incubator/docker-compose.yaml up > backend/incubator/logs
 echo "Launching Shop Service..."
 docker-compose -f backend/shop/docker-compose.yaml up > backend/shop/logs
 echo "Launching Team Service..."
