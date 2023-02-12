@@ -45,7 +45,7 @@ public class BaseShopService {
             restTemplate.postForEntity("http://inventory-app:8080/egg/" + trainerId, egg, null);
         } catch (HttpClientErrorException e) {
             HttpEntity<MoneyDTO> fix = new HttpEntity<>(new MoneyDTO(egg.getPrice()));
-            restTemplate.exchange("http://inventory-app:8080/money/withdraw/" + trainerId, HttpMethod.PUT, fix,
+            restTemplate.exchange("http://inventory-app:8080/money/deposit/" + trainerId, HttpMethod.PUT, fix,
                     MoneyDTO.class);
 
             throw e;
@@ -59,12 +59,18 @@ public class BaseShopService {
         ParameterizedTypeReference<List<Egg>> eggsRes = new ParameterizedTypeReference<List<Egg>>() {
         };
 
-        HttpEntity<Egg> delEgg = new HttpEntity<Egg>(egg);
-        restTemplate.exchange("http://inventory-app:8080/egg/" + trainerId, HttpMethod.DELETE, delEgg, eggsRes);
-
         HttpEntity<MoneyDTO> req = new HttpEntity<>(new MoneyDTO(egg.getPrice()));
         restTemplate.exchange("http://inventory-app:8080/money/deposit/" + trainerId,
                 HttpMethod.PUT, req, MoneyDTO.class);
+
+        HttpEntity<Egg> delEgg = new HttpEntity<Egg>(egg);
+        try {
+            restTemplate.exchange("http://inventory-app:8080/egg/" + trainerId, HttpMethod.DELETE, delEgg, eggsRes);
+        } catch (HttpClientErrorException e) {
+            HttpEntity<MoneyDTO> fix = new HttpEntity<>(new MoneyDTO(egg.getPrice()));
+            restTemplate.exchange("http://inventory-app:8080/money/withdraw/" + trainerId,
+                    HttpMethod.PUT, fix, MoneyDTO.class);
+        }
 
         return egg;
     }
