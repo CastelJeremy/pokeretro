@@ -20,7 +20,7 @@ services:
             - pokeretro-backend-trainer
             - pokeretro-backend
             - pokemon_pokeretro-backend
-            - team_pokeretro-backend
+            - backend_pokeretro-backend
 
 networks:
     pokeretro-backend-trainer:
@@ -28,5 +28,5 @@ networks:
         driver: bridge
     pokemon_pokeretro-backend:
         external: true
-    team_pokeretro-backend:
+    backend_pokeretro-backend:
         external: true

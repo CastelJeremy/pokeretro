@@ -1,6 +1,8 @@
 package net.pokeretro.incubator.dto;
 
-public class CapacityDTO {
+import java.io.Serializable;
+
+public class CapacityDTO implements Serializable {
     private String name;
     private String category;
     private Integer power;

@@ -21,8 +21,11 @@ services:
         networks:
             - pokeretro-backend-team
             - pokeretro-backend
+            - backend_pokeretro-backend
 
 networks:
     pokeretro-backend-team:
     pokeretro-backend:
-      driver: bridge
+        driver: bridge
+    backend_pokeretro-backend:
+        external: true

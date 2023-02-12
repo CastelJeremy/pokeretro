@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import net.pokeretro.team.dto.PokemonDTO;
 import net.pokeretro.team.dto.TeammateDTO;
 import net.pokeretro.team.entity.Teammate;
+import net.pokeretro.team.exception.NotEnoughPlaceException;
 import net.pokeretro.team.repository.TeammateRepository;
 import net.pokeretro.team.service.TeammateService;
 
@@ -41,7 +42,8 @@ public class TeamController {
 
     @CrossOrigin
     @PostMapping("/team/{trainerUuid}")
-    public ResponseEntity<TeammateDTO> postTeam(@PathVariable UUID trainerUuid, @RequestBody PokemonDTO pokemonDto) {
+    public ResponseEntity<TeammateDTO> postTeam(@PathVariable UUID trainerUuid, @RequestBody PokemonDTO pokemonDto)
+            throws NotEnoughPlaceException {
         return ResponseEntity.ok(teammateService.addPokemon(trainerUuid, pokemonDto).toDto());
     }
 

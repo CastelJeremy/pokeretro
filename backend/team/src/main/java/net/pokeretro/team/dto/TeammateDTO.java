@@ -1,9 +1,10 @@
 package net.pokeretro.team.dto;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
-public class TeammateDTO {
+public class TeammateDTO implements Serializable {
     private UUID id;
     private UUID trainerUuid;
     private Integer position;

@@ -1,6 +1,8 @@
 package net.pokeretro.team.dto;
 
-public class StatDTO {
+import java.io.Serializable;
+
+public class StatDTO implements Serializable {
     private Integer hp;
     private Integer attack;
     private Integer defense;

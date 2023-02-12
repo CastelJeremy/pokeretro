@@ -19,7 +19,7 @@ services:
             - pokeretro-backend
             - pokemon_pokeretro-backend
             - inventory_pokeretro-backend
-            - team_pokeretro-backend
+            - backend_pokeretro-backend
 
 networks:
     pokeretro-backend-incubator:
@@ -29,5 +29,5 @@ networks:
         external: true
     inventory_pokeretro-backend:
         external: true
-    team_pokeretro-backend:
+    backend_pokeretro-backend:
         external: true

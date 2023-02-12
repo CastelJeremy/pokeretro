@@ -4,15 +4,14 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import net.pokeretro.team.dto.PokemonDTO;
 import net.pokeretro.team.entity.Capacity;
 import net.pokeretro.team.entity.Pokemon;
 import net.pokeretro.team.entity.Stat;
 import net.pokeretro.team.entity.Teammate;
+import net.pokeretro.team.exception.NotEnoughPlaceException;
 import net.pokeretro.team.repository.TeammateRepository;
 
 @Service
@@ -23,12 +22,12 @@ public class TeammateService {
     @Autowired
     StatService statService;
 
-    public Teammate addPokemon(UUID trainerUuid, PokemonDTO pokemonDto) {
+    public Teammate addPokemon(UUID trainerUuid, PokemonDTO pokemonDto) throws NotEnoughPlaceException {
         List<Teammate> teammates = teammateRepository.findAllByTrainerUuid(trainerUuid);
         Integer position = teammates.size() + 1;
 
         if (position > 6) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
+            throw new NotEnoughPlaceException();
         }
 
         Pokemon pokemon = Pokemon.fromDto(pokemonDto);

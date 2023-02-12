@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -14,7 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.gson.Gson;
+
 import net.pokeretro.incubator.dto.PokemonDTO;
+import net.pokeretro.incubator.dto.RabbitMessageDTO;
 import net.pokeretro.incubator.exception.InventoryRemovalException;
 import net.pokeretro.incubator.exception.NotEnoughPlaceException;
 import net.pokeretro.incubator.exception.NotReadyToHatchException;
@@ -25,6 +29,9 @@ import net.pokeretro.incubator.respositories.EggRepository;
 public class IncubatorService {
     @Autowired
     EggRepository eggRepository;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     public List<Egg> place(UUID trainerId, Egg egg) throws NotEnoughPlaceException, InventoryRemovalException {
         List<Egg> eggs = eggRepository.findAllByTrainerId(trainerId);
@@ -67,8 +74,9 @@ public class IncubatorService {
                     "http://pokemon-app:8080/pokemons/" + egg.getPokemonId() + "/generate", PokemonDTO.class);
 
             // Send pokemon to team
-            HttpEntity<PokemonDTO> requesEntity = new HttpEntity<PokemonDTO>(pokemon.getBody());
-            restTemplate.postForEntity("http://team-app:8080/team/" + trainerId, requesEntity, null);
+            RabbitMessageDTO messageDto = new RabbitMessageDTO(trainerId, pokemon.getBody());
+            String message = new Gson().toJson(messageDto);
+            rabbitTemplate.convertAndSend("team-exchange", "team.add", message);
 
             // Remove the egg from the incubator
             eggRepository.delete(egg);
