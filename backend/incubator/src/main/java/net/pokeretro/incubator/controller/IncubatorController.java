@@ -1,5 +1,6 @@
 package net.pokeretro.incubator.controller;
 
+import net.pokeretro.incubator.exception.InventoryRemovalException;
 import net.pokeretro.incubator.exception.NotEnoughPlaceException;
 import net.pokeretro.incubator.exception.NotReadyToHatchException;
 import net.pokeretro.incubator.model.*;
@@ -31,7 +32,7 @@ public class IncubatorController {
 
     @PostMapping("/incubator/place/{trainerId}")
     public ResponseEntity<List<Egg>> placeEgg(@PathVariable UUID trainerId, @RequestBody Egg egg)
-            throws NotEnoughPlaceException {
+            throws NotEnoughPlaceException, InventoryRemovalException {
         return ResponseEntity.ok(incubatorService.place(trainerId, egg));
     }
 

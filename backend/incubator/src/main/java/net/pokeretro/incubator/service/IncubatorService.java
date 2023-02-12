@@ -6,12 +6,16 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import net.pokeretro.incubator.dto.PokemonDTO;
+import net.pokeretro.incubator.exception.InventoryRemovalException;
 import net.pokeretro.incubator.exception.NotEnoughPlaceException;
 import net.pokeretro.incubator.exception.NotReadyToHatchException;
 import net.pokeretro.incubator.model.Egg;
@@ -22,7 +26,7 @@ public class IncubatorService {
     @Autowired
     EggRepository eggRepository;
 
-    public List<Egg> place(UUID trainerId, Egg egg) throws NotEnoughPlaceException {
+    public List<Egg> place(UUID trainerId, Egg egg) throws NotEnoughPlaceException, InventoryRemovalException {
         List<Egg> eggs = eggRepository.findAllByTrainerId(trainerId);
 
         // Sum total weight of incubators
@@ -31,6 +35,17 @@ public class IncubatorService {
         // Check it does not exceed 3Kg
         if (weight + egg.getWeight() > 3000) {
             throw new NotEnoughPlaceException();
+        }
+
+        // Remove egg from inventory
+        RestTemplate restTemplate = new RestTemplate();
+        ParameterizedTypeReference<List<Egg>> eggsRes = new ParameterizedTypeReference<List<Egg>>() {
+        };
+        HttpEntity<Egg> reqEgg = new HttpEntity<Egg>(egg);
+        ResponseEntity<List<Egg>> res = restTemplate.exchange("http://inventory-app:8080/egg/" + trainerId, HttpMethod.DELETE, reqEgg, eggsRes);
+
+        if (!res.getStatusCode().equals(HttpStatus.OK)) {
+            throw new InventoryRemovalException();
         }
 
         // Update egg informations and put it in the incubator
