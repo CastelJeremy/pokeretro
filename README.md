@@ -82,6 +82,12 @@ chmod u+x stop.sh
 ./start.sh
 ```
 
+To stop it simply use the `stop.sh` script:
+
+```bash
+./stop.sh
+```
+
 ## Micro-Services Map
 
 Simple dependency map showing which micro-services must be powered on first as well as their application ports.
