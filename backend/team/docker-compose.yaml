@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+    database:
+        image: mongo
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongo
+            MONGO_INITDB_ROOT_PASSWORD: mongo
+        volumes:
+            - ./init.js:/docker-entrypoint-initdb.d/init.js:ro
+        networks:
+            - pokeretro-backend-team
+    team-app:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        restart: always
+        ports:
+            - 8086:8080
+        networks:
+            - pokeretro-backend-team
+            - pokeretro-backend
+
+networks:
+    pokeretro-backend-team:
+    pokeretro-backend:
+      driver: bridge
