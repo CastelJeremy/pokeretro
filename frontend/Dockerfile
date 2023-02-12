@@ -4,4 +4,4 @@ WORKDIR /app/front
 COPY ./ ./
 RUN npm install
 EXPOSE 9000
-CMD ["npm", "run", "serve"]
+CMD ["npm", "run", "serve-prod"]
