@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+    database:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: postgres
+        volumes:
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+        networks:
+            - pokeretro-backend-pokemon
+    pokemon-app:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        restart: always
+        ports:
+            - 8085:8080
+        networks:
+            - pokeretro-backend-pokemon
+            - pokeretro-backend
+
+networks:
+    pokeretro-backend-pokemon:
+    pokeretro-backend:
+        driver: bridge
