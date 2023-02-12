@@ -1,7 +1,6 @@
 echo "Stopping PokeRetro services..."
 
-# echo "Launching WebApp Service..."
-# docker-compose -f frontend/docker-compose.yaml up -d
+docker-compose -f frontend/docker-compose.yaml down
 
 docker-compose -f backend/incubator/docker-compose.yaml down
 docker-compose -f backend/shop/docker-compose.yaml down
