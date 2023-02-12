@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+    frontend-app:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        restart: always
+        ports:
+            - 80:9000
+        networks:
+            - auth_pokeretro-backend
+            - incubator_pokeretro-backend
+            - inventory_pokeretro-backend
+            - pokemon_pokeretro-backend
+            - shop_pokeretro-backend
+            - team_pokeretro-backend
+            - trainer_pokeretro-backend
+
+networks:
+    auth_pokeretro-backend:
+        external: true
+    incubator_pokeretro-backend:
+        external: true
+    inventory_pokeretro-backend:
+        external: true
+    pokemon_pokeretro-backend:
+        external: true
+    shop_pokeretro-backend:
+        external: true
+    team_pokeretro-backend:
+        external: true
+    trainer_pokeretro-backend:
+        external: true
+    
