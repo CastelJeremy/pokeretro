@@ -29,6 +29,9 @@ public class IncubatorService {
     public List<Egg> place(UUID trainerId, Egg egg) throws NotEnoughPlaceException, InventoryRemovalException {
         List<Egg> eggs = eggRepository.findAllByTrainerId(trainerId);
 
+        // Necessary for Date convertion to remove egg from inventory
+        egg.setIncubationStartDate(Date.from(Instant.now()));
+
         // Sum total weight of incubators
         Integer weight = eggs.stream().mapToInt(e -> e.getWeight()).sum();
 
@@ -49,7 +52,6 @@ public class IncubatorService {
         }
 
         // Update egg informations and put it in the incubator
-        egg.setIncubationStartDate(Date.from(Instant.now()));
         egg.setTrainerId(trainerId);
         eggRepository.save(egg);
 
