@@ -1,0 +1,63 @@
+.IncubationList {
+    height: 392px;
+    width: 100%;
+
+    overflow-x: scroll;
+
+    position: absolute;
+    top: 0;
+}
+
+.IncubationList .container {
+    margin: 12px 12px 0 30px;
+    display: flex;
+}
+
+.IncubationList .selected::before {
+    line-height: 2.8em;
+    content: '>';
+}
+
+.IncubationList .sprite {
+    margin-right: 12px;
+    height: 50px;
+    width: 50px;
+}
+
+.IncubationList .text .title {
+    display: flex;
+}
+
+.IncubationList .text .title .name {
+    margin: 0;
+    width: 250px;
+}
+
+.IncubationList .text .title .level {
+    margin: 0;
+    font-weight: bold;
+}
+
+.IncubationList .text .subtitle {
+    padding-left: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.IncubationList .text .subtitle .weight {
+    margin: 0;
+    width: 80px;
+    text-align: right;
+}
+
+.IncubationList .text .subtitle .price {
+    margin: 0;
+    width: 140px;
+    text-align: right;
+}
+
+.IncubationList .text .subtitle .time {
+    margin: 0;
+    width: 110px;
+    text-align: right;
+}

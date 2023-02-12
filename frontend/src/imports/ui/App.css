@@ -1,0 +1,35 @@
+@font-face {
+    font-family: 'Pokemon';
+    src: url('./Pokemon.ttf') format('truetype');
+    font-style: normal;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: gainsboro;
+    font-family: Pokemon;
+}
+
+#app {
+    height: 512px;
+    width: 512px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+    background-color: #ffffff;
+}

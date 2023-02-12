@@ -1,0 +1,28 @@
+.menuBar {
+    padding: 3px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 178px;
+    width: 180px;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+.menuBar .choicesContainer {
+    height: 100%;
+    width: 100%;
+    border: 5px double black;
+    box-sizing: border-box;
+}
+
+.menuBar .choicesList {
+    margin: 0;
+    padding-left: 9px;
+    font-size: small;
+    list-style-type: none;
+}
+
+.menuBar .choicesList .selected::before {
+    content: '> ';
+}

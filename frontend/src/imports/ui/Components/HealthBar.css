@@ -1,0 +1,21 @@
+.healthBar {
+    display: flex;
+    align-items: center;
+}
+
+.healthBar p {
+    margin: 0;
+    margin-right: 10px;
+    font-size: x-small;
+}
+
+.healthBar .barContainer {
+    height: 6px;
+    width: 150px;
+    border: 2px solid black;
+}
+
+.healthBar .barContainer .bar {
+    height: 100%;
+    background-color: gray;
+}

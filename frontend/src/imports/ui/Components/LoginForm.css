@@ -1,0 +1,45 @@
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginForm img {
+    height: 120px;
+    image-rendering: pixelated;
+}
+
+.loginForm input {
+    margin-bottom: 10px;
+    padding: 5px;
+
+    border: 5px double black;
+    font-family: inherit;
+    outline: none;
+}
+
+.loginForm button {
+    border: none;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: normal;
+    opacity: 1;
+    animation: button 2s infinite;
+    background-color: transparent;
+}
+
+@keyframes button {
+    30% {
+        opacity: 1;
+    }
+    40% {
+        opacity: 0;
+    }
+    60% {
+        opacity: 0;
+    }
+    70% {
+        opacity: 1;
+    }
+}
