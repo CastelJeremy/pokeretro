@@ -16,7 +16,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public User create(User user) throws UserCreateException, NoSuchAlgorithmException {
-        if (user.getPassword().length() > 0 && user.getUsername().length() > 0) {
+        if (user.getPassword().length() > 8 && user.getUsername().length() > 4) {
             Optional<User> optUser = userRepository.findByUsername(user.getUsername());
 
             if (optUser.isEmpty()) {
