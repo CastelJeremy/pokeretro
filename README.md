@@ -1,5 +1,7 @@
 # PokeRetro
 
+**WARNING**: This project is not ready for production, no security rules were implemented.
+
 ## Table of contents
 
 1. [What is this repo ?](#what-is-this-repo-)
@@ -18,6 +20,8 @@ It was directed by M. Morgan FAGET in his course of "Architecture Logicielle - M
 
 The aim is to create a Pokemon game with a micro-service software architecture.
 
+![Short Demo](./demo.gif)
+
 Some features were required :
 - Players can own 6 Pokemons in their team.
 - Players doesn't need to capture Pokemon, there is a shop where they can buy eggs.
@@ -26,7 +30,7 @@ Some features were required :
 - Hatched Pokemon needs to be predefined before hatching but Pokemon stats have to be generated after hatching.
 - If a player already own 6 Pokemon when an egg hatch, he needs to swap with a teammate.
 
-Some additionnals features were implemented :
+Some additionnals features were partially implemented :
 - Players can fight Pokemon
 - Players can fight Bosses
 
